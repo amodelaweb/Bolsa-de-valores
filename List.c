@@ -27,3 +27,7 @@ node_t* node(int value){
   nodo->back = NULL ;
   return nodo ;
 }
+
+int Add(node_t*node, int value){
+
+}
