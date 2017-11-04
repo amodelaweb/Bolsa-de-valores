@@ -5,7 +5,7 @@ typedef struct InfBroker
 {
     char* Broker;
     char* pipe ;
-    int pid
+    int pid;
 
 }Broker;
 

@@ -1,18 +1,38 @@
 #include "Utils.h"
 
-
-Empresa* Empresa(int acciones ,char* nombre ){
+Empresa* Empresa_t(int acciones ,char* nombre ){
   Empresa *empresa = (Empresa*)malloc(sizeof(struct Empresa)) ;
   empresa->acciones = acciones ;
-  empresa->nombre = (char*)malloc((sizeof char)*TAMNOMBRE) ;
+  empresa->nombre = (char*)malloc((sizeof (char))*TAMNOMBRE) ;
+  memset(empresa->nombre, 0, sizeof empresa->nombre);
+  strncpy(empresa->nombre, nombre, sizeof empresa->nombre - 1);
   return empresa ;
 }
-Broker* Broker(char* nombre , char* nompipe , int pid){
+Broker* Broker_t(char* nombre , char* nompipe , int pid){
   Broker *broker = (Broker*)malloc(sizeof(struct InfBroker)) ;
-  broker->Broker = acciones ;
-  empresa->nombre = (char*)malloc((sizeof char)*TAMNOMBRE) ;
-  return empresa ;
+  broker->Broker = (char*)malloc((sizeof (char))*TAMNOMBRE) ;
+  memset(broker->Broker, 0, sizeof broker->Broker);
+  strncpy(broker->Broker, nombre, sizeof broker->Broker - 1);
+  broker->pipe = (char*)malloc((sizeof (char))*TAMNOMBRE) ;
+  memset(broker->pipe, 0, sizeof broker->pipe);
+  strncpy(broker->pipe, nompipe, sizeof broker->pipe - 1);
+  broker->pid = pid;
+  return broker ;
 }
-Orden* Orden (char* nombre_emp , int precio , int cant , char* nombreb , int tipo){
-
+Orden* Orden_t(char* nombre_emp , int precio , int cant , char* nombreb , int tipo){
+  Orden *orden = (Orden*)malloc(sizeof(struct Orden)) ;
+  orden->empresa = (char*)malloc((sizeof (char))*TAMNOMBRE) ;
+  memset(orden->empresa, 0, sizeof orden->empresa);
+  strncpy(orden->empresa, nombre_emp, sizeof orden->empresa - 1);
+  orden->precio = precio ;
+  orden->cantidad = cant ;
+  orden->broker = (char*)malloc((sizeof (char))*TAMNOMBRE) ;
+  memset(orden->broker, 0, sizeof orden->broker);
+  strncpy(orden->broker, nombreb, sizeof orden->broker - 1);
+  if(tipo == 0){
+    orden->tip = 'C';
+  }else{
+    orden->tip = 'V';
+  }
+  return orden ;
 }
