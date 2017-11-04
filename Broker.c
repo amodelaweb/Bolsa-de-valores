@@ -101,11 +101,49 @@ void *manejoUsuario(void * Datos)
 }
 list_t* leerDatos(char* arch)
 {
+    // archivo
     FILE *archivo;
-    
-    list_t list = list();
-    add_order(lista, (const void *)(intptr_t)n);
+    char* caracteres = malloc(sizeof(char) * 30);
+    // token
+    char str[80] = "This is - www.tutorialspoint.com - website";
+    const char s[2] = "-";
+    char *token;
 
+    Empresa empresa;
+    list_t list = list();
+    
+
+    archivo = fopen(arch, "r");
+    /*revisar perror*/
+    if (archivo == NULL)
+    {
+        printf("eror abrir archivo");
+        exit(1);
+    }     
+    else
+    {
+        printf("\nEl contenido del archivo de prueba es \n\n");
+        while (feof(archivo) == 0)
+        {
+            fgets(caracteres, 30, archivo);
+            printf("%s", caracteres);
+            //
+            empresa ;
+            /* get the first token */
+            token = strtok(str, s);
+
+            /* walk through other tokens */
+            while (token != NULL)
+            {
+                printf(" %s\n", token);
+                empresa
+                token = strtok(NULL, s);
+            }
+            add_order(list, (const void *)(Empresa)empresa);
+        }
+        system("PAUSE");
+    }
+    fclose(archivo);
 }
 
 int validarEntrada(char* comando)
