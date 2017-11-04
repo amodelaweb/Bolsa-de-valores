@@ -3,11 +3,10 @@
 
 typedef struct InfBroker
 {
-    char empresa[20];
-    int precio;
-    int cantidad;
-    char broker[20];
-    char tipo[1];
-} InfBroker;
+    char* Broker;
+    char* pipe ;
+    int pid
+
+}Broker;
 
 #endif // !__StockMarket_H

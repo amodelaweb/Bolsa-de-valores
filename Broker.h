@@ -3,9 +3,9 @@
 
 typedef struct Empresa
 {
-    char nombre[20];
+    char* nombre;
     int acciones;
 } Empresa;
 
-/*e snecesario crear dos hilos*/
+/*es necesario crear dos hilos*/
 #endif // !__Broker_H

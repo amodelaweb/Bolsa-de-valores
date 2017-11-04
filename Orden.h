@@ -1,13 +1,13 @@
-#ifndef ORDEN_H_ 
+#ifndef ORDEN_H_
 #define ORDEN_H_
 
 typedef struct Orden
 {
-   char empresa[20];
+   char* empresa;
    int precio;
    int cantidad;
-   char broker[20];
-   char tipo[1];
+   char* broker;
+   char tip;
 } Orden;
 
 #endif
