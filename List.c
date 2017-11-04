@@ -1,15 +1,22 @@
 #include "List.h"
 #include <stdlib.h>
 //Funciones de la lista
-list_t* list(int value){
+list_t* list(){
   list_t *lista =  (list_t*)malloc(sizeof(struct list));
-  lista->head = node(value) ;
-  lista->last = lista->head ;
+  lista->head = NULL ;
+  lista->last = NULL ;
   return lista ;
 }
 //==========================================================
 void add(list_t* list , int value) {
-  list->la
+
+  if(list->head != NULL){
+    node_t* aux = Add(list->last,value);
+    list->last = aux ;
+  }else{
+    list->head = node(value) ;
+    list->last = list->head ;
+  }
 }
 //==========================================================
 void remove(list_t* list , int value){
@@ -28,6 +35,11 @@ node_t* node(int value){
   return nodo ;
 }
 
-int Add(node_t*node, int value){
-
+node_t* Add(node_t*node1, int value){
+  if(node1->next == NULL){
+    node1->next = node(value);
+    return node1->next ;
+  }else{
+    return NULL ;
+  }
 }
