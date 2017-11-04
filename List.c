@@ -22,11 +22,46 @@ void add(list_t* list , const void* value) {
 }
 //==========================================================
 void remove_element(list_t* list , const void* value){
+  if(list->head !=NULL){
+    node_t* aux = list->head ;
+    if (list->comparator(&(list->head)->value,&value) == 0){
+      if(list->head == list->last){
+        list->last = NULL ;
+      }
+      list->head = aux->next;
+      (list->head)->back = NULL ;
+      free(aux);
+    }else{
 
+      aux = get_node(list , value);
+      if(aux != NULL){
+        (aux->back)->next = aux->next;
+        if(aux->next != NULL)
+        (aux->next)->back = aux->back ;
+        if(aux == list->last){
+          list->last = aux->back;
+        }
+        free(aux);
+      }
+    }
+  }
 }
 //==========================================================
 node_t* get_node(list_t* list, const void* value){
-
+  int band = 0 ;
+  if(list->head != NULL){
+    node_t* aux = list->head;
+    while (aux != NULL && band == 0) {
+      aux = aux->next;
+      if(aux != NULL){
+        if(list->comparator(&aux->value,&value) == 0){
+          band = 1 ;
+        }
+      }
+    }
+    return aux  ;
+  }
+  return NULL ;
 }
 //==========================================================
 void print(list_t* list,int mode){
