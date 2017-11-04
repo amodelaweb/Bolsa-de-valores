@@ -102,6 +102,7 @@ void *manejoUsuario(void * Datos)
 list_t* leerDatos(char* arch)
 {
     FILE *archivo;
+    sas
     list_t list = list();
     add_order(lista, (const void *)(intptr_t)n);
 
