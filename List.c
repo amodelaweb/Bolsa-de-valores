@@ -2,14 +2,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 //Funciones de la lista
-list_t* list(){
+list_t* list(int (*comparator) (const void* e1 , const void* e2)){
   list_t *lista =  (list_t*)malloc(sizeof(struct list));
   lista->head = NULL ;
   lista->last = NULL ;
+  lista->comparator = comparator ;
   return lista ;
 }
 //==========================================================
-void add(list_t* list , int value) {
+void add(list_t* list , const void* value) {
 
   if(list->head != NULL){
     node_t* aux = Add(list->last,value);
@@ -20,11 +21,11 @@ void add(list_t* list , int value) {
   }
 }
 //==========================================================
-void remove_element(list_t* list , int value){
+void remove_element(list_t* list , const void* value){
 
 }
 //==========================================================
-node_t* get_node(list_t* list, int value){
+node_t* get_node(list_t* list, const void* value){
 
 }
 //==========================================================
@@ -47,8 +48,46 @@ void print(list_t* list,int mode){
     }
   }
 }
+//==========================================================
+void add_order(list_t* list , const void* value){
+  if(list->head!=NULL){
+    node_t* aux = list->head ;
+    node_t* aux2 ;
+    if (list->comparator(&value , &aux->value) < 0){
+      list->head = node(value);
+      (list->head)->next = aux ;
+      aux->back = list->head;
+      list->last = aux ;
+    }else{
+      while(list->comparator(&value,&aux->value) > 0 && (aux->next != NULL)) {
+        aux = aux->next;
+      }
+      if(list->comparator(&value,&aux->value) > 0){
+        aux->next = node(value);
+        (aux->next)->back = aux ;
+        list->last = aux->next ;
+      }else{
+        aux2 = aux->back ;
+        aux->back = node(value);
+        (aux->back)->back = aux2 ;
+        (aux->back)->next = aux ;
+        aux2->next = aux->back ;
+      }
+    }
+  }else{
+    list->head = node(value) ;
+    list->last = list->head ;
+  }
+}
+int isEmpty(list_t* list){
+  if(list->head == NULL){
+    return 1 ;
+  }else{
+    return 0 ;
+  }
+}
 //Funciones del nodo
-node_t* node(int value){
+node_t* node(const void* value){
   node_t *nodo =  (node_t*)malloc(sizeof(struct node));
   nodo->value = value ;
   nodo->next = NULL ;
@@ -56,7 +95,7 @@ node_t* node(int value){
   return nodo ;
 }
 //==========================================================
-node_t* Add(node_t*node1, int value){
+node_t* Add(node_t*node1, const void* value){
   if(node1->next == NULL){
     node1->next = node(value);
     (node1->next)->back = node1;
