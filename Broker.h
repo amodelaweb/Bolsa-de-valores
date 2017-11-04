@@ -1,6 +1,7 @@
 #ifndef __Broker_H
 #define __Broker_H
 
+#include "List.h"
 typedef struct Empresa
 {
     char* nombre;
