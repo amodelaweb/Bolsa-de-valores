@@ -8,15 +8,15 @@ list_t* list(int value){
   return lista ;
 }
 //==========================================================
-void add(list_t list , int value) {
-  
+void add(list_t* list , int value) {
+  list->la
 }
 //==========================================================
-void remove(list_t list , int value){
+void remove(list_t* list , int value){
 
 }
 //==========================================================
-node_t* get_node(list_t list, int value){
+node_t* get_node(list_t* list, int value){
 
 }
 //Funciones del nodo
