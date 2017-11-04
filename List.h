@@ -16,8 +16,9 @@ typedef struct list{
 //Funciones de la lista
 list_t* list();
 void add(list_t* list , int value) ;
-void remove(list_t* list , int value);
+void remove_element(list_t* list , int value);
 node_t* get_node(list_t* list, int value);
+void print(list_t* list,int mode);
 //Funciones del nodo
 node_t* node(int value);
 node_t* Add(node_t*node1, int value);
