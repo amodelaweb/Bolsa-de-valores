@@ -10,7 +10,7 @@ void *manejoUsuario(void *datos);
 list_t *leerDatos(char *arch);
 /*se encarga que los datos esten correctos para despues enviarlos
 si son correctos retorna 1*/
-int validarEntrada(char *arch);
+Orden* validarEntrada(char *arch);
 /*envia los datos al stockMarket*/
 int enviarDatos(char *arch);
 char *recibirDatos();
@@ -124,7 +124,7 @@ list_t *leerDatos(char *arch)
   return lista;
 }
 
-int validarEntrada(char *comando)
+Orden* validarEntrada(char *comando)
 {
   /*oden de llegada de datos
   -   tipo de operacion
