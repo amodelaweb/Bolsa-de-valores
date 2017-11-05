@@ -19,6 +19,7 @@ Broker* Broker_t(char* nombre , char* nompipe , int pid){
   broker->pid = pid;
   return broker ;
 }
+/*llegada tipo, empresa, acciones,  precio , nombre broker*/
 Orden *Orden_t(int tipo, char *nombre_emp, int precio, int cant, char *nombreb)
 {
   Orden *orden = (Orden*)malloc(sizeof(struct Orden)) ;

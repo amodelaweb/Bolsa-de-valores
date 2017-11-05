@@ -7,6 +7,7 @@
 #include "List.h"
 
 #define tamchar 20;
+#define maxchar 35;
 
 /*hilos*/
 /*se encarga de recibir las respuestas asincronas*/
@@ -31,8 +32,8 @@ int main(int argc, char const *argv[])
     int continuar;
     /*fin de variables*/
     /*corregir creacion datos*/
-    datos.nombre = malloc(sizeof(char) * 20);
-    datos.pipename = malloc(sizeof(char) * 20);
+    datos.nombre = malloc(sizeof(char) * tamchar);
+    datos.pipename = malloc(sizeof(char) *tamchar);
 
     if (argc < 5)
     {
@@ -93,13 +94,13 @@ list_t *leerDatos(char *arch)
 {
     // archivo
     FILE *archivo;
-    char *linea = malloc(sizeof(char) * 30);
+    char *linea = malloc(sizeof(char) * maxchar);
     // token
     const char s[2] = " ";
     char *token;
     // otros
     Empresa *empresa;
-    char *nomEmpr = malloc(sizeof(char) * 30);
+    char *nomEmpr = malloc(sizeof(char) * maxchar);
     int acciones;
     // corregir lamado a la linea
     list_t lista = list();
@@ -116,7 +117,7 @@ list_t *leerDatos(char *arch)
         printf("\nEl contenido del archivo de prueba es \n\n");
         while (feof(archivo) == 0)
         {
-            fgets(linea, 30, archivo);
+            fgets(linea, max, archivo);
             printf("%s", linea);
             //
 
@@ -139,19 +140,62 @@ list_t *leerDatos(char *arch)
 
 int validarEntrada(char *comando)
 {
+    /*oden de llegada de datos
+    -   tipo de operacion
+    -   empresa
+    -   acciones
+    -   precio
+    */
     const char s[2] = ":";
+    char* tipo;
+    char* empresa;
+    char* acciones;
+    char* precio;
+
     char *token;
     Orden* orden = Orden_t()
     printf("COM: %s \n", comando);
-
+    /*se capturan los datos*/
     token = strtok(comando, s);
-    printf("token1: %s \n", token);
     token = strtok(NULL, s);
-    printf("token2: %s \n", token);
+    if(token != NULL && strcmp(token,"\n")!=0)
+    {
+        tipo = malloc(sizeof(char) * tamchar);
+        strcpy(tipo, token);
+    }
+    else
+        tipo = NULL;
     token = strtok(NULL, s);
-    printf("token3: %s \n", token);
+    if(token != NULL && strcmp(token,"\n")!=0)
+    {
+        tipo = malloc(sizeof(char) * tamchar);
+        strcpy(tipo, token);
+    }
+    else
+        tipo = NULL;
     token = strtok(NULL, s);
-    printf("token4: %s \n", token);
+    if(token != NULL && strcmp(token,"\n")!=0)
+    {
+        tipo = malloc(sizeof(char) * tamchar);
+        strcpy(tipo, token);
+    }
+    else
+        tipo = NULL;
+    /*validacion de datos*/
+    if ((strcmp(tipo, "venta") == 0) || (strcmp(tipo, "compra") == 0) ||
+        (strcmp(tipo, "consulta") == 0) || (strcmp(tipo, "monto") == 0))
+        {
+            
+        }
+        else
+        {
+            printf("COMANDO INVALIDO\n");
+            printf("Comando disponibles: \n");
+            printf("    compra\n");
+            printf("    venta\n");
+            printf("    consulta\n");
+            printf("    monto\n");
+        }
 }
 int enviarDatos(char *arch)
 {
