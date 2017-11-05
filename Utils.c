@@ -29,8 +29,7 @@ Orden* Orden_t( char tipo , char* nombre_emp , int cant ,  int precio , char* no
   orden->broker = (char*)malloc((sizeof (char))*TAMNOMBRE) ;
   memset(orden->broker, 0, sizeof orden->broker);
   strncpy(orden->broker, nombreb, sizeof orden->broker - 1);
-  orden->tip = 'C';
-  orden->tip = 'V';
+  orden->tip = tipo;
   return orden ;
 }
 Datos* Datos_t(int monto , char* nombre , char* nombrepipe){
