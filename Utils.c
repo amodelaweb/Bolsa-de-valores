@@ -44,11 +44,31 @@ Datos* Datos_t(int monto , char* nombre , char* nombrepipe){
   strncpy(dato->pipename, nombrepipe, sizeof dato->pipename - 1);
 
 }
-/*crear constructor datos*/
-/*typedef struct Datos
-{
-    int monto;
-    Empresa* empresas ;//
-    char* nombre;
-    char* pipename;
-} Datos;*/
+int comparator_venta(const void *a1 , const void *b1){
+  Orden a = *(Orden *)a1;
+  Orden b = *(Orden *)b1;
+
+  if(a.precio < b.precio){
+    return -1 ;
+  }else{
+    if(a.precio > b.precio){
+      return 1 ;
+    }else{
+      return 0 ;
+    }
+  }
+}
+int comparator_compra(const void *a1 , const void *b1){
+  Orden a = *(Orden *)a1;
+  Orden b = *(Orden *)b1;
+
+  if(a.precio < b.precio){
+    return 1 ;
+  }else{
+    if(a.precio > b.precio){
+      return -1 ;
+    }else{
+      return 0 ;
+    }
+  }
+}

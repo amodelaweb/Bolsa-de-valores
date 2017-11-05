@@ -1,13 +1,5 @@
-#include <pthread.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include "Broker.h"
-#include "Orden.h"
-#include "List.h"
 
-#define tamchar 20;
-#define maxchar 35;
+#include "Utils.h"
 
 /*hilos*/
 /*se encarga de recibir las respuestas asincronas*/
@@ -32,8 +24,8 @@ int main(int argc, char const *argv[])
     int continuar;
     /*fin de variables*/
     /*corregir creacion datos*/
-    datos.nombre = malloc(sizeof(char) * tamchar);
-    datos.pipename = malloc(sizeof(char) *tamchar);
+    datos.nombre = malloc(sizeof(char) * TAMNOMBRE);
+    datos.pipename = malloc(sizeof(char) *TAMNOMBRE);
 
     if (argc < 5)
     {
@@ -72,11 +64,11 @@ void *manejoUsuario(void *Datos)
 {
     int continuar;
 
-    char *comando = sizeof(char) * tamchar;
+    char *comando = sizeof(char) * TAMNOMBRE;
     continuar = 1;
     while (continuar)
     {
-        fgets(comando, tamchar, stdin);
+        fgets(comando, TAMNOMBRE, stdin);
         if (strcmp(comando, "salir") == 0)
         {
             /*antes de cerrar se muestra con que saldo quedo y el numero de acciones de cadaempresa*/
@@ -160,7 +152,7 @@ int validarEntrada(char *comando)
     token = strtok(NULL, s);
     if(token != NULL && strcmp(token,"\n")!=0)
     {
-        tipo = malloc(sizeof(char) * tamchar);
+        tipo = malloc(sizeof(char) * TAMNOMBRE);
         strcpy(tipo, token);
     }
     else
@@ -168,7 +160,7 @@ int validarEntrada(char *comando)
     token = strtok(NULL, s);
     if(token != NULL && strcmp(token,"\n")!=0)
     {
-        tipo = malloc(sizeof(char) * tamchar);
+        tipo = malloc(sizeof(char) * TAMNOMBRE);
         strcpy(tipo, token);
     }
     else
@@ -176,7 +168,7 @@ int validarEntrada(char *comando)
     token = strtok(NULL, s);
     if(token != NULL && strcmp(token,"\n")!=0)
     {
-        tipo = malloc(sizeof(char) * tamchar);
+        tipo = malloc(sizeof(char) * TAMNOMBRE);
         strcpy(tipo, token);
     }
     else
