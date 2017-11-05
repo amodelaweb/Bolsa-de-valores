@@ -177,6 +177,11 @@ Orden* validarEntrada(char *comando)
     if ((strcmp(tipo, "venta") == 0) || (strcmp(tipo, "compra") == 0) ||
         (strcmp(tipo, "consulta") == 0) || (strcmp(tipo, "monto") == 0))
         {
+            if(strcmp(tipo, "monto") == 0)
+            {
+                estadoBroker();
+                return NULL;
+            }
             if(strcmp(tiop,"venta") == 0)
             {
                 if(validarEmpresa(empresa) == 0)
@@ -185,10 +190,7 @@ Orden* validarEntrada(char *comando)
                     printf("no existe el nombre de la empresa\n");
                     return NULL;
                 }
-                else
-                {
-                    // se crea la orden
-                }
+                
             }
         }
         else
@@ -211,4 +213,10 @@ char *recibirDatos()
 int validarEmpresa(char* empresa)
 {
 
+}
+/*utlilzado cuando se escribe el comando monto*/
+estadoBroker()
+{
+    printf("Su monto actual es: %d", datos.monto);
+    
 }
