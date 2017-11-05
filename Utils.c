@@ -45,3 +45,10 @@ Datos* Datos_t(int monto , char* nombre , char* nombrepipe){
 
 }
 /*crear constructor datos*/
+/*typedef struct Datos
+{
+    int monto;
+    Empresa* empresas ;//
+    char* nombre;
+    char* pipename;
+} Datos;*/
