@@ -40,3 +40,10 @@ Orden *Orden_t(int tipo, char *nombre_emp, int precio, int cant, char *nombreb)
 }
 
 /*crear constructor datos*/
+/*typedef struct Datos
+{
+    int monto;
+    Empresa* empresas ;//
+    char* nombre;
+    char* pipename;
+} Datos;*/

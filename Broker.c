@@ -185,7 +185,7 @@ int validarEntrada(char *comando)
     if ((strcmp(tipo, "venta") == 0) || (strcmp(tipo, "compra") == 0) ||
         (strcmp(tipo, "consulta") == 0) || (strcmp(tipo, "monto") == 0))
         {
-            
+
         }
         else
         {
@@ -202,4 +202,8 @@ int enviarDatos(char *arch)
 }
 char *recibirDatos()
 {
+}
+int validarEmpresa(char* empresa)
+{
+
 }
