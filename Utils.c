@@ -19,7 +19,8 @@ Broker* Broker_t(char* nombre , char* nompipe , int pid){
   broker->pid = pid;
   return broker ;
 }
-Orden* Orden_t(char* nombre_emp , int precio , int cant , char* nombreb , int tipo){
+Orden *Orden_t(int tipo, char *nombre_emp, int precio, int cant, char *nombreb)
+{
   Orden *orden = (Orden*)malloc(sizeof(struct Orden)) ;
   orden->empresa = (char*)malloc((sizeof (char))*TAMNOMBRE) ;
   memset(orden->empresa, 0, sizeof orden->empresa);
@@ -36,3 +37,5 @@ Orden* Orden_t(char* nombre_emp , int precio , int cant , char* nombreb , int ti
   }
   return orden ;
 }
+
+/*crear constructor datos*/
