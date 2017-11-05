@@ -18,7 +18,7 @@ void *manejoUsuario(void *datos);
 list_t *leerDatos(char *arch);
 /*se encarga que los datos esten correctos para despues enviarlos
 si son correctos retorna 1*/
-int validarEntrada(char *arch);
+Orden* validarEntrada(char *arch);
 /*envia los datos al stockMarket*/
 int enviarDatos(char *arch);
 char *recibirDatos();
@@ -138,7 +138,7 @@ list_t *leerDatos(char *arch)
     return lista;
 }
 
-int validarEntrada(char *comando)
+Orden* validarEntrada(char *comando)
 {
     /*oden de llegada de datos
     -   tipo de operacion
@@ -185,7 +185,19 @@ int validarEntrada(char *comando)
     if ((strcmp(tipo, "venta") == 0) || (strcmp(tipo, "compra") == 0) ||
         (strcmp(tipo, "consulta") == 0) || (strcmp(tipo, "monto") == 0))
         {
-
+            if(strcmp(tiop,"venta") == 0)
+            {
+                if(validarEmpresa(empresa) == 0)
+                {
+                    printf("Error: no se puede realizar la venta\n");
+                    printf("no existe el nombre de la empresa\n");
+                    return NULL;
+                }
+                else
+                {
+                    // se crea la orden
+                }
+            }
         }
         else
         {
@@ -195,6 +207,7 @@ int validarEntrada(char *comando)
             printf("    venta\n");
             printf("    consulta\n");
             printf("    monto\n");
+            return NULL;
         }
 }
 int enviarDatos(char *arch)
