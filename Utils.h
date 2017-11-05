@@ -11,7 +11,7 @@
 
 Empresa* Empresa_t(int acciones ,char* nombre );
 Broker* Broker_t(char* nombre , char* nompipe , int pid);
-Orden* Orden_t(char* nombre_emp , int precio , int cant , char* nombreb , char tipo);
-
+Orden* Orden_t( char tipo , char* nombre_emp , int cant ,  int precio , char* nombreb);
+Datos* Datos_t(int monto ,char* nombre , char* nombrepipe);
 
 #endif // !__UTILS_H

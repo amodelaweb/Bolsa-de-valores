@@ -19,7 +19,7 @@ Broker* Broker_t(char* nombre , char* nompipe , int pid){
   broker->pid = pid;
   return broker ;
 }
-Orden* Orden_t(char* nombre_emp , int precio , int cant , char* nombreb , char tipo){
+Orden* Orden_t( char tipo , char* nombre_emp , int cant ,  int precio , char* nombreb){
   Orden *orden = (Orden*)malloc(sizeof(struct Orden)) ;
   orden->empresa = (char*)malloc((sizeof (char))*TAMNOMBRE) ;
   memset(orden->empresa, 0, sizeof orden->empresa);
@@ -33,5 +33,15 @@ Orden* Orden_t(char* nombre_emp , int precio , int cant , char* nombreb , char t
   orden->tip = 'V';
   return orden ;
 }
+Datos* Datos_t(int monto , char* nombre , char* nombrepipe){
+  Datos *dato = (Datos*)malloc(sizeof(struct Datos)) ;
+  dato->empresas =  (Empresa*)malloc( sizeof(struct Empresa));
+  dato->nombre = (char*)malloc((sizeof (char))*TAMNOMBRE) ;
+  memset(dato->nombre, 0, sizeof dato->nombre);
+  strncpy(dato->nombre, nombre, sizeof dato->nombre - 1);
+  dato->pipename = (char*)malloc((sizeof (char))*TAMNOMBRE) ;
+  memset(dato->pipename, 0, sizeof dato->pipename);
+  strncpy(dato->pipename, nombrepipe, sizeof dato->pipename - 1);
 
+}
 /*crear constructor datos*/
