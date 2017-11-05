@@ -33,3 +33,5 @@ Orden* Orden_t(char* nombre_emp , int precio , int cant , char* nombreb , char t
   orden->tip = 'V';
   return orden ;
 }
+
+/*crear constructor datos*/

@@ -8,5 +8,12 @@ typedef struct Empresa
     int acciones;
 } Empresa;
 
+typedef struct Datos
+{
+    int monto;
+    Empresa* empresas;
+    char* nombre;
+    char* pipename;
+} Datos;
 /*es necesario crear dos hilos*/
 #endif // !__Broker_H
