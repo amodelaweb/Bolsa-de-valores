@@ -19,7 +19,7 @@ Broker* Broker_t(char* nombre , char* nompipe , int pid){
   broker->pid = pid;
   return broker ;
 }
-Orden* Orden_t(char* nombre_emp , int precio , int cant , char* nombreb , int tipo){
+Orden* Orden_t(char* nombre_emp , int precio , int cant , char* nombreb , char tipo){
   Orden *orden = (Orden*)malloc(sizeof(struct Orden)) ;
   orden->empresa = (char*)malloc((sizeof (char))*TAMNOMBRE) ;
   memset(orden->empresa, 0, sizeof orden->empresa);
@@ -29,10 +29,7 @@ Orden* Orden_t(char* nombre_emp , int precio , int cant , char* nombreb , int ti
   orden->broker = (char*)malloc((sizeof (char))*TAMNOMBRE) ;
   memset(orden->broker, 0, sizeof orden->broker);
   strncpy(orden->broker, nombreb, sizeof orden->broker - 1);
-  if(tipo == 0){
-    orden->tip = 'C';
-  }else{
-    orden->tip = 'V';
-  }
+  orden->tip = 'C';
+  orden->tip = 'V';
   return orden ;
 }
