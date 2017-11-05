@@ -184,17 +184,17 @@ Orden* validarEntrada(char *comando)
                     printf("no existe el nombre de la empresa\n");
                     return NULL;
                 }
-                
+
             }
         }
         else
         {
             printf("COMANDO INVALIDO\n");
             printf("Comando disponibles: \n");
-            printf("    compra\n");
-            printf("    venta\n");
-            printf("    consulta\n");
-            printf("    monto\n");
+            printf("    *) compra\n");
+            printf("    *) venta\n");
+            printf("    *) consulta\n");
+            printf("    *) monto\n");
             return NULL;
         }
 }
@@ -211,6 +211,6 @@ int validarEmpresa(char* empresa)
 /*utlilzado cuando se escribe el comando monto*/
 estadoBroker()
 {
-    printf("Su monto actual es: %d", datos.monto);
-    
+    printf("Su monto actual es: %d", datos->monto);
+
 }

@@ -21,5 +21,7 @@ Datos* Datos_t(int monto ,char* nombre , char* nombrepipe);
 /* Comparadores para lista */
 int comparator_venta(const void *a1 , const void *b1);
 int comparator_compra(const void *a1 , const void *b1);
+/* Utilidades */
+void print_t(const void *elemento);
 
 #endif // !__UTILS_H
