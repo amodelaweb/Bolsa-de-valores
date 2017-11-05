@@ -42,7 +42,7 @@ Datos* Datos_t(int monto , char* nombre , char* nombrepipe){
   dato->pipename = (char*)malloc((sizeof (char))*TAMNOMBRE) ;
   memset(dato->pipename, 0, sizeof dato->pipename);
   strncpy(dato->pipename, nombrepipe, sizeof dato->pipename - 1);
-
+  return dato  ;
 }
 int comparator_venta(const void *a1 , const void *b1){
   Orden a = *(Orden *)a1;
