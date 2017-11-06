@@ -68,17 +68,17 @@ void print(list_t* list,int mode){
   if(list->head != NULL){
     if(mode == 0){
       node_t* aux = list->head;
-      printf("%d\n",aux->value );
+      print_t(aux->value );
       while (aux->next != NULL) {
         aux = aux->next;
-        printf("%d\n", aux->value );
+        print_t(aux->value );
       }
     }else{
       node_t* aux = list->last;
-      printf("%d\n",aux->value );
+      print_t(aux->value);
       while (aux->back != NULL) {
         aux = aux->back;
-        printf("%d\n", aux->value );
+        print_t( aux->value );
       }
     }
   }

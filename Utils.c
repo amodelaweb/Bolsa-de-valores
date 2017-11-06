@@ -73,4 +73,5 @@ int comparator_compra(const void *a1 , const void *b1){
 }
 void print_t(const void *elemento){
   Orden a = *(Orden *)a1;
+  /* PENDIENTE*/
 }
