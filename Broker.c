@@ -57,11 +57,12 @@ void *respuestaAsin(void *datos)
 void *manejoUsuario(void *Datos)
 {
   int continuar;
-
+  Orden* orden;
   char *comando = sizeof(char) * TAMNOMBRE;
   continuar = 1;
   while (continuar)
   {
+      printf("Ingrese el comando: ");
     fgets(comando, TAMNOMBRE, stdin);
     if (strcmp(comando, "salir") == 0)
     {
@@ -70,9 +71,13 @@ void *manejoUsuario(void *Datos)
     }
     else
     {
-      validarEntrada(comando);
-      enviarDatos(comando);
-      prinf(recibirDatos(comando));
+        orden = validarEntrada(comando)
+      if(orden != NULL)
+      {
+          enviarDatos(orden);
+          prinf(recibirDatos(comando));
+      }
+      
     }
   }
 }
@@ -167,7 +172,12 @@ Orden* validarEntrada(char *comando)
     }
     else
         tipo = NULL;
-    /*validacion de datos*/
+    /*validacion de datos
+        los datos que el broker puede validar son
+        el tipo de comando
+        si va a vender que el nombre de la emrpesas exista
+        si el tipo es monto se muestras de una ves
+        para las demas validaciones lo hace el stockmarket*/
     if ((strcmp(tipo, "venta") == 0) || (strcmp(tipo, "compra") == 0) ||
         (strcmp(tipo, "consulta") == 0) || (strcmp(tipo, "monto") == 0))
         {
@@ -176,7 +186,7 @@ Orden* validarEntrada(char *comando)
                 estadoBroker();
                 return NULL;
             }
-            if(strcmp(tiop,"venta") == 0)
+            if(strcmp(tipo,"venta") == 0)
             {
                 if(validarEmpresa(empresa) == 0)
                 {
@@ -184,13 +194,13 @@ Orden* validarEntrada(char *comando)
                     printf("no existe el nombre de la empresa\n");
                     return NULL;
                 }
-
+                return Orden_t(tipo,empresa,atoi(acciones),atoi(precio),datos.nombre);
             }
         }
         else
         {
-            printf("COMANDO INVALIDO\n");
-            printf("Comando disponibles: \n");
+            printf("\tCOMANDO INVALIDO\n");
+            printf("Comandos disponibles: \n");
             printf("    *) compra\n");
             printf("    *) venta\n");
             printf("    *) consulta\n");
@@ -198,7 +208,7 @@ Orden* validarEntrada(char *comando)
             return NULL;
         }
 }
-int enviarDatos(char *arch)
+int enviarDatos(Orden* orden)
 {
 }
 char *recibirDatos()
