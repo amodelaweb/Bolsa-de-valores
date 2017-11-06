@@ -1,5 +1,6 @@
 #include "Utils.h"
 
+
 Empresa* Empresa_t(int acciones ,char* nombre ){
   Empresa *empresa = (Empresa*)malloc(sizeof(struct Empresa)) ;
   empresa->acciones = acciones ;
