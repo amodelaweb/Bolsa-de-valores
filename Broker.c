@@ -221,7 +221,6 @@ int validarEmpresa(char* empresa)
 /*utlilzado cuando se escribe el comando monto*/
 estadoBroker()
 {
-    printf("Su monto actual es: %d", datos.monto);
-    /*crear for para reccorrer las empresas*/
-    
+    printf("Su monto actual es: %d", datos->monto);
+
 }
