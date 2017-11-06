@@ -16,8 +16,13 @@ int f(const void *a1 , const void *b1){
     }
   }
 }
+
+void print_t (const void *elemento){
+  int a = *(int *)elemento;
+  printf("%d\n", a);
+}
 int main(int argc, char const *argv[]) {
-  list_t* lista = list(&f);
+  list_t* lista = list(&f , &print_t);
   int n = 3 ;
   add_order(lista,(const void *)  (intptr_t) n);
   n = 5 ;

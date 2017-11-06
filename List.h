@@ -12,10 +12,11 @@ typedef struct list{
   node_t *head ;
   node_t *last;
   int (*comparator) (const void* e1 , const void* e2);
+  void (*print_t) (const void *elemento);
 } list_t ;
 
 //Funciones de la lista
-list_t* list(int (*comparator) (const void* e1 , const void* e2));
+list_t* list(int (*comparator) (const void* e1 , const void* e2) , void (*print_t) (const void *elemento));
 void add(list_t* list , const void* value) ;
 void add_order(list_t* list , const void* value) ;
 int isEmpty(list_t* list);

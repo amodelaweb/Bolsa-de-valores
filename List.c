@@ -2,11 +2,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 //Funciones de la lista
-list_t* list(int (*comparator) (const void* e1 , const void* e2)){
+list_t* list(int (*comparator) (const void* e1 , const void* e2) , void (*print_t) (const void *elemento)){
   list_t *lista =  (list_t*)malloc(sizeof(struct list));
   lista->head = NULL ;
   lista->last = NULL ;
   lista->comparator = comparator ;
+  lista->print_t = print_t ;
   return lista ;
 }
 //==========================================================
@@ -68,17 +69,17 @@ void print(list_t* list,int mode){
   if(list->head != NULL){
     if(mode == 0){
       node_t* aux = list->head;
-      print_t(aux->value );
+      list->print_t(&aux->value );
       while (aux->next != NULL) {
         aux = aux->next;
-        print_t(aux->value );
+        list->print_t(&aux->value );
       }
     }else{
       node_t* aux = list->last;
-      print_t(aux->value);
+      list->print_t(&aux->value);
       while (aux->back != NULL) {
         aux = aux->back;
-        print_t( aux->value );
+        list->print_t(&aux->value );
       }
     }
   }
