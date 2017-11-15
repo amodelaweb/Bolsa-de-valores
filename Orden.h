@@ -8,10 +8,17 @@ typedef struct Orden
    int cantidad;
    char* broker; // borrar
    char tip;
-} Orden;
+  } Orden;
+
+/*tipo:
+  - c: compra
+  - v: venta
+  - q: consulta
+  */
 typedef struct Resp
 {
   char tipo;
+  char* empresa; 
   int acciones ;
   int monto ;
   int confirmacion;
