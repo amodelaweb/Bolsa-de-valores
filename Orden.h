@@ -6,7 +6,7 @@ typedef struct Orden
    char* empresa;
    int precio;
    int cantidad;
-   char* broker;
+   char* broker; // borrar
    char tip;
 } Orden;
 typedef struct Resp
@@ -16,6 +16,9 @@ typedef struct Resp
   int monto ;
   int confirmacion;
 }Respuesta;
+/*mensaje broker -> stockMarket
+el pipe name es el nonmbre del broker
+*/
 typedef struct Mns
 {
   Orden* orden;

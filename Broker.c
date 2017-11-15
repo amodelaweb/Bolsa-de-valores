@@ -158,6 +158,7 @@ Orden* validarEntrada(char *comando)
     }
     else
         tipo = NULL;
+    
     token = strtok(NULL, s);
     if(token != NULL && strcmp(token,"\n")!=0)
     {
@@ -166,6 +167,7 @@ Orden* validarEntrada(char *comando)
     }
     else
         tipo = NULL;
+
     token = strtok(NULL, s);
     if(token != NULL && strcmp(token,"\n")!=0)
     {
@@ -188,16 +190,29 @@ Orden* validarEntrada(char *comando)
                 estadoBroker();
                 return NULL;
             }
+
             if(strcmp(tipo,"venta") == 0)
             {
+                // existen dos tipos
                 if(validarEmpresa(empresa) == 0)
                 {
                     printf("Error: no se puede realizar la venta\n");
                     printf("no existe el nombre de la empresa\n");
                     return NULL;
                 }
-                return Orden_t(tipo,empresa,atoi(acciones),atoi(precio),datos.nombre);
+                return Orden_t(tipo,empresa,atoi(acciones),atoi(precio));
             }
+
+            if(strcmp(tipo,"consulta") == 0 && empresa == NULL)
+            {
+                Orden_t(tipo,empresa,NULL,NULL);
+            }
+
+            if(strcmp(tipo,"compra") == 0)
+            {
+                
+            }
+
         }
         else
         {

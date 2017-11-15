@@ -6,7 +6,8 @@ typedef struct Empresa
     char* nombre;
     int acciones;
 } Empresa;
-
+/*el pipename es el nombre del pipe de stockmarket
+el nombre es el nombre del broker y tambien el nombre del pipename*/
 typedef struct Datos
 {
     int monto;
