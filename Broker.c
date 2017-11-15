@@ -267,27 +267,10 @@ int enviarDatos(Orden *orden)
             printf("\n Eh abierto el pipe");
         }
     } while (creado == 0);
-    write(fd,mensaje, sizeof(Mensaje));
+    write(fd,mensaje, sizeof(struct Mns));
     close(fd);
 }
-char *recibirDatos()
-{
-    int r;
-    Respuesta respuesta;
-    fd = open(datos.nombre);
-    if (fd == -1)
-    {
-        perror("Pipe : ");
-        exit(1);
-    }
-    // El otro proceso (nom1) le envia el nombre para el nuevo pipe y el pid.
-    r = read(fd, &respuesta, sizeof(respuesta));
-    if (cuantos == -1)
-    {
-        perror("proceso lector:");
-        exit(1);
-    }
-}
+
 int validarEmpresa(char *empresa)
 {
 }
@@ -299,19 +282,56 @@ estadoBroker()
 
 void sig_handler(int sengnal)
 {
-    int r;
+    int creado, fd,n;
     Respuesta respuesta;
-    fd = open(datos.nombre);
-    if (fd == -1)
+
+    creado = 0;
+    do
     {
-        perror("Pipe : ");
-        exit(1);
+        fd = open(c, O_RDONLY);
+        if (fd == -1)
+        {
+            perror("pipe");
+            printf(" Se volvera a intentar despues\n");
+            //sleep(5);
+        }
+        else
+            creado = 1;
+    } while (creado == 0);
+    do
+    {
+        n = read(fd, respuesta, sizeof(struct Resp));
+    } while (n < 0);
+    close(fd);
+
+    prinRespuesta(respuesta);
+}
+
+printRespuesta(Respuesta respu)
+{
+
+    if(strcmp(respu.tipo,"c") == 0)
+    {
+        printf("===============================================\n");
+        printf("Se ha la compra exitosa de: \n");
+        printf("Acciones de la empresa: %s \n", respu.empresa);
+        printf("acciones compradas: %s \n",respu.acciones);
+        printf("con un monto total de: %s \n",(respu.acciones * respu.monto));
+        printf("por medio del broker: %s \n",respu.broker);
+        printf("===============================================\n");
     }
-    // El otro proceso (nom1) le envia el nombre para el nuevo pipe y el pid.
-    r = read(fd, &respuesta, sizeof(respuesta));
-    if (cuantos == -1)
+    if (strcmp(respu.tipo, "v") == 0)
     {
-        perror("proceso lector:");
-        exit(1);
+        printf("===============================================\n");
+        printf("se ha la compra exitosa de: \n");
+        printf("acciones de la empresa: %s \n", respu.empresa);
+        printf("acciones compradas: %s \n",respu.acciones);
+        printf("con un monto total de: %s \n",(respu.acciones * respu.monto));
+        printf("por medio del broker: %s \n",respu.broker);
+        printf("===============================================\n");
+    }
+    if (strcmp(respu.tipo, "q") == 0)
+    {
+        
     }
 }

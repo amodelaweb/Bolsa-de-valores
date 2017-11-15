@@ -8,14 +8,22 @@ typedef struct Orden
    int cantidad;
    char tip;
    char* broker;
-} Orden;
+  } Orden;
+/*
+tipo:
+  -c :compra
+  -v :venta
+  -q :consulta
+broker: representa al nombre del del broker involucrado
+*/
 typedef struct Resp
 {
   char tipo;
   char* empresa;
+  char* broker;
   int acciones ;
   int monto ;
-  int confirmacion;
+  int confirmacion; // borrar
 }Respuesta;
 /*mensaje broker -> stockMarket
 el pipe name es el nonmbre del broker
