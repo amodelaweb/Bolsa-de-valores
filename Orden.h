@@ -12,6 +12,7 @@ typedef struct Orden
 typedef struct Resp
 {
   char tipo;
+  char* empresa;
   int acciones ;
   int monto ;
   int confirmacion;
