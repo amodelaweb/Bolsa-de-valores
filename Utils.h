@@ -12,6 +12,9 @@
 #include <ctype.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <sys/stat.h>
+#include <signal.h>
+#include <fcntl.h>
 
 #define TAMNOMBRE 20
 #define maxchar 35;
@@ -22,7 +25,7 @@ Broker* Broker_t(char* nombre , int pid);
 Orden* Orden_t( char tipo , char* nombre_emp , int cant ,  int precio , char* broker);
 Datos* Datos_t(int monto ,char* nombre , char* nombrepipe);
 Mensaje* Mensaje_t(Orden* orden,int pid,char* pipename);
-Respuesta* Respuesta_t(char tipo, int acciones , int monto, int confirmacion);
+Respuesta* Respuesta_t(char tipo, int acciones , int monto, int confirmacion , char* empresa);
 /* Comparadores para lista */
 int comparator_orden(const void *a1 , const void *b1);
 int comparator_broker(const void *a1 , const void *b1);
