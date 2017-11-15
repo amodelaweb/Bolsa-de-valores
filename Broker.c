@@ -251,7 +251,7 @@ Orden *validarEntrada(char *comando)
 int enviarDatos(Orden *orden)
 {
     Mensaje *mensaje;
-    Mensaje_t(orden)
+    mensaje = Mensaje_t(orden,datos.pid,datos.nombre);
     int fd, creado;
     creado = 0;
     do
@@ -267,12 +267,26 @@ int enviarDatos(Orden *orden)
             printf("\n Eh abierto el pipe");
         }
     } while (creado == 0);
-    write(fd, , sizeof(datos));
+    write(fd,mensaje, sizeof(Mensaje));
     close(fd);
 }
 char *recibirDatos()
 {
-
+    int r;
+    Respuesta respuesta;
+    fd = open(datos.nombre);
+    if (fd == -1)
+    {
+        perror("Pipe : ");
+        exit(1);
+    }
+    // El otro proceso (nom1) le envia el nombre para el nuevo pipe y el pid.
+    r = read(fd, &respuesta, sizeof(respuesta));
+    if (cuantos == -1)
+    {
+        perror("proceso lector:");
+        exit(1);
+    }
 }
 int validarEmpresa(char *empresa)
 {
@@ -285,5 +299,19 @@ estadoBroker()
 
 void sig_handler(int sengnal)
 {
-    //Handler
+    int r;
+    Respuesta respuesta;
+    fd = open(datos.nombre);
+    if (fd == -1)
+    {
+        perror("Pipe : ");
+        exit(1);
+    }
+    // El otro proceso (nom1) le envia el nombre para el nuevo pipe y el pid.
+    r = read(fd, &respuesta, sizeof(respuesta));
+    if (cuantos == -1)
+    {
+        perror("proceso lector:");
+        exit(1);
+    }
 }
