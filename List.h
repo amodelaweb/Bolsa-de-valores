@@ -11,6 +11,7 @@ typedef struct node {
 typedef struct list{
   node_t *head ;
   node_t *last;
+  node_t *window;
   int (*comparator) (const void* e1 , const void* e2);
   void (*print_t) (const void *elemento);
 } list_t ;
@@ -26,5 +27,9 @@ void print(list_t* list,int mode);
 //Funciones del nodo
 node_t* node(const void* value);
 node_t* Add(node_t*node1, const void* value);
+void next_t(list_t* list);
+void back_t(list_t* list);
+void home_t(list_t* list);
+void last_t(list_t* list);
 
 #endif
