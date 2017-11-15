@@ -148,11 +148,11 @@ node_t* Add(node_t*node1, const void* value){
 }
 //===========================================================
 void next_t(list_t* list){
-  list->window = (list->window)->next;
+    list->window = (list->window)->next;
 }
 //===========================================================
 void back_t(list_t* list){
-  list->window = (list->window)->back;
+    list->window = (list->window)->back;
 }
 //===========================================================
 void home_t(list_t* list){
@@ -161,5 +161,12 @@ void home_t(list_t* list){
 //===========================================================
 void last_t(list_t* list){
   list->window = list->last;
+}
+//===========================================================
+void del_t(list_t* list){
+  ((list->window)->next)->back = (list->window)->back ;
+  ((list->window)->back)->next = (list->window)->next ;
+  free(list->window);
+  list->window = list->head;
 }
 //===========================================================
