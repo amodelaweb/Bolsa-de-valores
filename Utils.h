@@ -29,5 +29,5 @@ int comparator_orden(const void *a1 , const void *b1);
 /* Utilidades */
 void print_t(const void *elemento);
 void to_lowercase(char* str);
-
+void add_empresa(Datos* broker,Empresa* empresa);
 #endif // !__UTILS_H

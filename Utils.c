@@ -43,6 +43,7 @@ Datos* Datos_t(int monto , char* nombre , char* nombrepipe){
   memset(dato->pipename, 0, sizeof dato->pipename);
   strncpy(dato->pipename, nombrepipe, sizeof dato->pipename - 1);
   dato->pid = getpid() ;
+  dato->tam = 1 ;
   return dato  ;
 }
 Mensaje* Mensaje_t(Orden* orden,int pid,char* pipename){
@@ -53,6 +54,11 @@ Mensaje* Mensaje_t(Orden* orden,int pid,char* pipename){
   memset(mensaje->pipename, 0, sizeof mensaje->pipename);
   strncpy(mensaje->pipename, pipename, sizeof mensaje->pipename - 1);
   return mensaje ;
+}
+void add_empresa(Datos* broker,Empresa* empresa){
+    broker->empresas[broker->tam-1] = *empresa ;
+    broker->tam++;
+    broker->empresas = (Empresa*)realloc( broker->empresas , sizeof(struct Empresa) * broker->tam);
 }
 int comparator_venta(const void *a1 , const void *b1){
   Orden **a = (Orden**)a1;

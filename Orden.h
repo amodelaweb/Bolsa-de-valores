@@ -11,7 +11,7 @@ typedef struct Orden
 } Orden;
 typedef struct Resp
 {
-  char tiṕo ;
+  char tipo;
   int acciones ;
   int monto ;
   int confirmacion;

@@ -11,6 +11,7 @@ typedef struct Datos
 {
     int monto;
     Empresa* empresas;
+    int tam ;
     char* nombre;
     char* pipename;
     int pid;

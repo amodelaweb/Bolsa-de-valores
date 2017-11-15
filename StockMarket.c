@@ -21,7 +21,7 @@ int main(int argc, char const *argv[])
       if (fd == -1) {
         perror("pipe");
         printf(" Se volvera a intentar despues\n");
-        sleep(5);
+        //sleep(5);
       } else creado = 1;
     } while (creado == 0);
 
