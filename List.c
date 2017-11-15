@@ -8,6 +8,7 @@ list_t* list(int (*comparator) (const void* e1 , const void* e2) , void (*print_
   lista->last = NULL ;
   lista->comparator = comparator ;
   lista->print_t = print_t ;
+  lista->window = NULL ;
   return lista ;
 }
 //==========================================================
@@ -19,6 +20,7 @@ void add(list_t* list , const void* value) {
   }else{
     list->head = node(value) ;
     list->last = list->head ;
+    list->window = list->head;
   }
 }
 //==========================================================
@@ -31,6 +33,9 @@ void remove_element(list_t* list , const void* value){
       }
       list->head = aux->next;
       (list->head)->back = NULL ;
+      if(list->comparator(&aux->value,&(list->window)->value) == 0){
+        list->window = NULL ;
+      }
       free(aux);
     }else{
 
@@ -113,6 +118,7 @@ void add_order(list_t* list , const void* value){
   }else{
     list->head = node(value) ;
     list->last = list->head ;
+    list->window = list->head;
   }
 }
 int isEmpty(list_t* list){
@@ -140,4 +146,20 @@ node_t* Add(node_t*node1, const void* value){
     return NULL ;
   }
 }
-//==========================================================
+//===========================================================
+void next_t(list_t* list){
+  list->window = (list->window)->next;
+}
+//===========================================================
+void back_t(list_t* list){
+  list->window = (list->window)->back;
+}
+//===========================================================
+void home_t(list_t* list){
+  list->window = list->head;
+}
+//===========================================================
+void last_t(list_t* list){
+  list->window = list->last;
+}
+//===========================================================

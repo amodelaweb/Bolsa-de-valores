@@ -59,9 +59,11 @@ void Procesar_Orden(Mensaje mensaje){
     free(auxb);
   }
   if((mensaje.orden)->tip = 'C'){
+    //compra
     add_order(compras,(const void *) mensaje.orden);
   }else{
     if((mensaje.orden)->tip = 'V'){
+      //venta
       add_order(ventas,(const void *) mensaje.orden);
     }
   }
