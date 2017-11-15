@@ -62,8 +62,10 @@ void *manejoUsuario(void *Datos)
   continuar = 1;
   while (continuar)
   {
-      printf("Ingrese el comando: ");
+      printf("$: "
+    );
     fgets(comando, TAMNOMBRE, stdin);
+    to_lowercase(comando);
     if (strcmp(comando, "salir") == 0)
     {
       /*antes de cerrar se muestra con que saldo quedo y el numero de acciones de cadaempresa*/
@@ -77,7 +79,7 @@ void *manejoUsuario(void *Datos)
           enviarDatos(orden);
           prinf(recibirDatos(comando));
       }
-      
+
     }
   }
 }

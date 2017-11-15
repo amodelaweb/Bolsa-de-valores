@@ -45,13 +45,13 @@ Datos* Datos_t(int monto , char* nombre , char* nombrepipe){
   return dato  ;
 }
 int comparator_venta(const void *a1 , const void *b1){
-  Orden a = *(Orden *)a1;
-  Orden b = *(Orden *)b1;
-
-  if(a.precio < b.precio){
+  Orden **a = (Orden**)a1;
+  Orden **b = (Orden**)b1;
+  printf("---> %d\n",(*a)->precio );
+  if((*a)->precio < (*b)->precio){
     return -1 ;
   }else{
-    if(a.precio > b.precio){
+    if((*a)->precio > (*b)->precio){
       return 1 ;
     }else{
       return 0 ;
@@ -59,20 +59,30 @@ int comparator_venta(const void *a1 , const void *b1){
   }
 }
 int comparator_compra(const void *a1 , const void *b1){
-  Orden a = *(Orden *)a1;
-  Orden b = *(Orden *)b1;
-
-  if(a.precio < b.precio){
-    return 1 ;
+  Orden **a = (Orden**)a1;
+  Orden **b = (Orden**)b1;
+  printf("---> %d\n",(*a)->precio );
+  if((*a)->precio > (*b)->precio){
+    return -1 ;
   }else{
-    if(a.precio > b.precio){
-      return -1 ;
+    if((*a)->precio < (*b)->precio){
+      return 1 ;
     }else{
       return 0 ;
     }
   }
 }
 void print_t(const void *elemento){
-  Orden a = *(Orden *)a1;
-  /* PENDIENTE*/
+  Orden **b = (Orden**)elemento;
+  printf("---> %s\n",(*b)->empresa );
+}
+void to_lowercase(char* str){
+  int i ;
+  char aux[strlen(str)];
+  for( i = 0; str[i]; i++){
+    //str[i] = (char)tolower(str[i]) ;
+    aux[i] = tolower(str[i]);
+  }
+  aux[i] = '\0';
+  strncpy(str, aux, sizeof aux - 1);
 }

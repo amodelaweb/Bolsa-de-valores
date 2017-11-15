@@ -79,7 +79,7 @@ void print(list_t* list,int mode){
       list->print_t(&aux->value);
       while (aux->back != NULL) {
         aux = aux->back;
-        list->print_t(&aux->value );
+        list->print_t( &aux->value );
       }
     }
   }
