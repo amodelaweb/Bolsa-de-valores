@@ -17,11 +17,14 @@ Broker* Broker_t(char* nombre , int pid){
   broker->pid = pid;
   return broker ;
 }
-Orden* Orden_t( char tipo , char* nombre_emp , int cant ,  int precio ){
+Orden* Orden_t( char tipo , char* nombre_emp , int cant ,  int precio , char* broker){
   Orden *orden = (Orden*)malloc(sizeof(struct Orden)) ;
   orden->empresa = (char*)malloc((sizeof (char))*TAMNOMBRE) ;
   memset(orden->empresa, 0, sizeof orden->empresa);
   strncpy(orden->empresa, nombre_emp, sizeof orden->empresa - 1);
+  orden->broker = (char*)malloc((sizeof (char))*TAMNOMBRE) ;
+  memset(orden->broker, 0, sizeof orden->broker);
+  strncpy(orden->broker, broker, sizeof orden->broker - 1);
   orden->precio = precio ;
   orden->cantidad = cant ;
   orden->tip = tipo;
@@ -70,10 +73,10 @@ int comparator_orden(const void *a1 , const void *b1){
 int comparator_broker(const void *a1 , const void *b1){
   Broker **a = (Broker**)a1;
   Broker **b = (Broker**)b1;
-  if((*a)->pid > (*b)->pid){
+  if(strcmp((*a)->Broker,(*b)->Broker) < 0){
     return -1 ;
   }else{
-    if((*a)->pid < (*b)->pid){
+    if(strcmp((*a)->Broker,(*b)->Broker) > 0){
       return 1 ;
     }else{
       return 0 ;

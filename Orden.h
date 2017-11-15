@@ -7,17 +7,12 @@ typedef struct Orden
    int precio;
    int cantidad;
    char tip;
-  } Orden;
-
-/*tipo:
-  - c: compra
-  - v: venta
-  - q: consulta
-  */
+   char* broker;
+} Orden;
 typedef struct Resp
 {
   char tipo;
-  char* empresa; 
+  char* empresa;
   int acciones ;
   int monto ;
   int confirmacion;

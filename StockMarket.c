@@ -6,6 +6,7 @@ list_t* brokers = list(&comparator_broker , &printb_t);
 
 void ImprimimrOrdenes();
 void Procesar_Orden(Mensaje mensaje);
+void avisar(char* broker1 , char* broker2 , Respuesta *r);
 
 int main(int argc, char const *argv[])
 {
@@ -42,16 +43,17 @@ int main(int argc, char const *argv[])
     do{
       n = read(fd,mensaje,sizeof(struct Mns));
     }while(n < 0);
-    Procesar_Orden(mensaje);
     close(fd);
+    Procesar_Orden(mensaje);
   }
 }
-
+//========================================================================
 void ImprimimrOrdenes(){
 
 }
-
+//========================================================================
 void Procesar_Orden(Mensaje mensaje){
+  int band =0,resta = 0;
   Broker* auxb = Broker_t(mensaje.pipename,mensaje.pid) ;
   if(get_node(brokers,(const void *)auxb) == NULL){
     add_order(brokers,(const void *) auxb);
@@ -60,12 +62,55 @@ void Procesar_Orden(Mensaje mensaje){
   }
   if((mensaje.orden)->tip = 'C'){
     //compra
-    add_order(compras,(const void *) mensaje.orden);
+    if(isEmpty(ventas)){
+      add_order(compras,(const void *) mensaje.orden);
+    }else{
+      last_t(ventas);
+      while (ventas->window != NULL && band == 0) {
+        if((mensaje.orden)->precio <= (compras->window)->precio ){
+          band = 1;
+        }
+        back_t(ventas);
+      }
+      if(band == 0){
+        add_order(compras ,(const void *) mensaje.orden);
+      }
+    }
   }else{
     if((mensaje.orden)->tip = 'V'){
       //venta
-      add_order(ventas,(const void *) mensaje.orden);
+      if(isEmpty(compras)){
+        add_order(ventas,(const void *) mensaje.orden);
+      }else{
+        home_t(compras);
+        while (compras->window != NULL && band == 0) {
+          if((mensaje.orden)->precio <= (compras->window)->precio ){
+            band = 1;
+            resta = (compras->window)->cantidad - (mensaje.orden)->cantidad;
+            if(resta == 0){
+              //NOTIFICAR A LOS DOS BROKERS
+              del_t(compras);
+            }else if (resta > 0){
+              //LAS COMPRAS TIENEN MAS QUE LAS VENTAS
+            }else{
+              //notificar las ventas tiene mas que compra
+              del_t(compras);
+
+              //MENOR QUE CERO
+            }
+          }
+          next_t(compras);
+        }
+        if(band == 0){
+          add_order(ventas,(const void *) mensaje.orden);
+        }
+      }
     }
   }
 
 }
+//========================================================================
+void avisar(char* broker1 , char* broker2 , Respuesta *r){
+
+}
+//========================================================================
