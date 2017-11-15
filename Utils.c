@@ -58,7 +58,7 @@ Mensaje* Mensaje_t(Orden* orden,int pid,char* pipename){
 void add_empresa(Datos* broker,Empresa* empresa){
     broker->empresas[broker->tam-1] = *empresa ;
     broker->tam++;
-    broker->empresas = (Empresa*)realloc( broker->empresas , sizeof(struct Empresa) * broker->tam);
+    broker->empresas = (Empresa*)realloc( broker->empresas ,  sizeof(struct Empresa) * broker->tam);
 }
 int comparator_venta(const void *a1 , const void *b1){
   Orden **a = (Orden**)a1;
