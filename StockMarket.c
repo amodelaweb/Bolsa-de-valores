@@ -13,6 +13,18 @@ int main(int argc, char const *argv[])
   -ventas
   -brokers
   */
+  if (argc != 2){
+    printf("\n Uso: ./%s Nombre_Pipe",argv[0]);
+    exit(1);
+  }
+  int fd;
+  mode_t fifo_mode = S_IRUSR | S_IWUSR
+  unlink(argv[1]);
+  // Creacion del pipe inicial, el que se recibe como argumento del main
+  if (mkfifo (argv[1], fifo_mode) == -1) {
+    perror("Server mkfifo : ");
+    exit(1);
+  }
 
   while(1){
     creado = 0 ;

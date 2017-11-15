@@ -14,11 +14,14 @@ Orden* validarEntrada(char *arch);
 /*envia los datos al stockMarket*/
 int enviarDatos(char *arch);
 char *recibirDatos();
+void sig_handler(int sengnal);
 
 Datos* datos;
 
 int main(int argc, char const *argv[])
 {
+  signal(SIGUSR1, sig_handler);
+  mode_t fifo_mode = S_IRUSR | S_IWUSR;
   char *comando;
   pthread_t thread1, thread2;
   int continuar;
@@ -27,7 +30,7 @@ int main(int argc, char const *argv[])
   if (argc < 5)
   {
     printf("\nUso incorrecto \n");
-    printf("Uso: %s pipename recursos_iniciales monto \n",argv[0]);
+    printf("Uso: ./%s pipename recursos_iniciales monto \n",argv[0]);
     exit(1);
   }
   datos = Datos_t(atoi(argv[4]) , argv[1] , argv[2]);
@@ -62,26 +65,26 @@ void *manejoUsuario(void *Datos)
   continuar = 1;
   while (continuar)
   {
-      printf("~$ "
-    );
-    fgets(comando, TAMNOMBRE, stdin);
-    to_lowercase(comando);
-    if (strcmp(comando, "salir") == 0)
-    {
-      /*antes de cerrar se muestra con que saldo quedo y el numero de acciones de cadaempresa*/
-      exit(1);
-    }
-    else
-    {
-        orden = validarEntrada(comando)
-      if(orden != NULL)
-      {
-          enviarDatos(orden);
-          prinf(recibirDatos(comando));
-      }
-
-    }
+    printf("~$ "
+  );
+  fgets(comando, TAMNOMBRE, stdin);
+  to_lowercase(comando);
+  if (strcmp(comando, "salir") == 0)
+  {
+    /*antes de cerrar se muestra con que saldo quedo y el numero de acciones de cadaempresa*/
+    exit(1);
   }
+  else
+  {
+    orden = validarEntrada(comando)
+    if(orden != NULL)
+    {
+      enviarDatos(orden);
+      prinf(recibirDatos(comando));
+    }
+
+  }
+}
 }
 list_t *leerDatos(char *arch)
 {
@@ -133,46 +136,75 @@ list_t *leerDatos(char *arch)
 
 Orden* validarEntrada(char *comando)
 {
-    /*oden de llegada de datos
-    -   tipo de operacion
-    -   empresa
-    -   acciones
-    -   precio
-    */
-    const char s[2] = ":";
-    char* tipo;
-    char* empresa;
-    char* acciones;
-    char* precio;
+  /*oden de llegada de datos
+  -   tipo de operacion
+  -   empresa
+  -   acciones
+  -   precio
+  */
+  const char s[2] = ":";
+  char* tipo;
+  char* empresa;
+  char* acciones;
+  char* precio;
 
-    char *token;
-    Orden* orden = Orden_t()
-    printf("COM: %s \n", comando);
-    /*se capturan los datos*/
-    token = strtok(comando, s);
-    token = strtok(NULL, s);
-    if(token != NULL && strcmp(token,"\n")!=0)
+  char *token;
+  Orden* orden = Orden_t()
+  printf("COM: %s \n", comando);
+  /*se capturan los datos*/
+  token = strtok(comando, s);
+  token = strtok(NULL, s);
+  if(token != NULL && strcmp(token,"\n")!=0)
+  {
+    tipo = malloc(sizeof(char) * TAMNOMBRE);
+    strcpy(tipo, token);
+  }
+  else
+  tipo = NULL;
+  token = strtok(NULL, s);
+  if(token != NULL && strcmp(token,"\n")!=0)
+  {
+    tipo = malloc(sizeof(char) * TAMNOMBRE);
+    strcpy(tipo, token);
+  }
+  else
+  tipo = NULL;
+  token = strtok(NULL, s);
+  if(token != NULL && strcmp(token,"\n")!=0)
+  {
+    tipo = malloc(sizeof(char) * TAMNOMBRE);
+    strcpy(tipo, token);
+  }
+  else
+  tipo = NULL;
+  /*validacion de datos
+  los datos que el broker puede validar son
+  el tipo de comando
+  si va a vender que el nombre de la emrpesas exista
+  si el tipo es monto se muestras de una ves
+  para las demas validaciones lo hace el stockmarket*/
+  if ((strcmp(tipo, "venta") == 0) || (strcmp(tipo, "compra") == 0) ||
+  (strcmp(tipo, "consulta") == 0) || (strcmp(tipo, "monto") == 0))
+  {
+    if(strcmp(tipo, "monto") == 0)
     {
-        tipo = malloc(sizeof(char) * TAMNOMBRE);
-        strcpy(tipo, token);
+      estadoBroker();
+      return NULL;
     }
     else
         tipo = NULL;
-    
-    token = strtok(NULL, s);
-    if(token != NULL && strcmp(token,"\n")!=0)
-    {
-        tipo = malloc(sizeof(char) * TAMNOMBRE);
-        strcpy(tipo, token);
-    }
-    else
-        tipo = NULL;
 
     token = strtok(NULL, s);
     if(token != NULL && strcmp(token,"\n")!=0)
+    if(strcmp(tipo,"venta") == 0)
     {
-        tipo = malloc(sizeof(char) * TAMNOMBRE);
-        strcpy(tipo, token);
+      if(validarEmpresa(empresa) == 0)
+      {
+        printf("Error: no se puede realizar la venta\n");
+        printf("no existe el nombre de la empresa\n");
+        return NULL;
+      }
+      return Orden_t(tipo,empresa,atoi(acciones),atoi(precio),datos.nombre);
     }
     else
         tipo = NULL;
@@ -238,6 +270,11 @@ int validarEmpresa(char* empresa)
 /*utlilzado cuando se escribe el comando monto*/
 estadoBroker()
 {
-    printf("Su monto actual es: %d", datos->monto);
+  printf("Su monto actual es: %d", datos->monto);
 
+}
+
+void sig_handler(int sengnal)
+{
+  //Handler
 }
