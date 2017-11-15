@@ -9,7 +9,13 @@ typedef struct Orden
    char* broker;
    char tip;
 } Orden;
-
+typedef struct Resp
+{
+  char tiṕo ;
+  int acciones ;
+  int monto ;
+  int confirmacion;
+}Respuesta;
 typedef struct Mns
 {
   Orden* orden;
