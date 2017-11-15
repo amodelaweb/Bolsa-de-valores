@@ -42,7 +42,17 @@ Datos* Datos_t(int monto , char* nombre , char* nombrepipe){
   dato->pipename = (char*)malloc((sizeof (char))*TAMNOMBRE) ;
   memset(dato->pipename, 0, sizeof dato->pipename);
   strncpy(dato->pipename, nombrepipe, sizeof dato->pipename - 1);
+  dato->pid = getpid() ;
   return dato  ;
+}
+Mensaje* Mensaje_t(Orden* orden,int pid,char* pipename){
+  Mensaje *mensaje = (Mensaje*)malloc(sizeof(struct Mns)) ;
+  mensaje->orden = orden ;
+  mensaje->pid= pid ;
+  mensaje->pipename = (char*)malloc((sizeof (char))*TAMNOMBRE) ;
+  memset(mensaje->pipename, 0, sizeof mensaje->pipename);
+  strncpy(mensaje->pipename, pipename, sizeof mensaje->pipename - 1);
+  return mensaje ;
 }
 int comparator_venta(const void *a1 , const void *b1){
   Orden **a = (Orden**)a1;
@@ -59,6 +69,20 @@ int comparator_venta(const void *a1 , const void *b1){
   }
 }
 int comparator_compra(const void *a1 , const void *b1){
+  Orden **a = (Orden**)a1;
+  Orden **b = (Orden**)b1;
+  printf("---> %d\n",(*a)->precio );
+  if((*a)->precio > (*b)->precio){
+    return -1 ;
+  }else{
+    if((*a)->precio < (*b)->precio){
+      return 1 ;
+    }else{
+      return 0 ;
+    }
+  }
+}
+int comparator_orden(const void *a1 , const void *b1){
   Orden **a = (Orden**)a1;
   Orden **b = (Orden**)b1;
   printf("---> %d\n",(*a)->precio );

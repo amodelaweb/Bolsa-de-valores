@@ -62,7 +62,7 @@ void *manejoUsuario(void *Datos)
   continuar = 1;
   while (continuar)
   {
-      printf("$: "
+      printf("~$ "
     );
     fgets(comando, TAMNOMBRE, stdin);
     to_lowercase(comando);

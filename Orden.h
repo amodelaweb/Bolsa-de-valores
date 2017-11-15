@@ -10,4 +10,11 @@ typedef struct Orden
    char tip;
 } Orden;
 
+typedef struct Mns
+{
+  Orden* orden;
+  int pid;
+  char* pipename;
+}Mensaje;
+
 #endif

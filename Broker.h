@@ -13,6 +13,7 @@ typedef struct Datos
     Empresa* empresas;
     char* nombre;
     char* pipename;
+    int pid;
 } Datos;
 /*es necesario crear dos hilos*/
 #endif // !__Broker_H
