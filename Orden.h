@@ -6,7 +6,6 @@ typedef struct Orden
    char* empresa;
    int precio;
    int cantidad;
-   char* broker; // borrar
    char tip;
 } Orden;
 typedef struct Resp

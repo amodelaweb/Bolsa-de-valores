@@ -18,16 +18,16 @@
 
 /* Constructores */
 Empresa* Empresa_t(int acciones ,char* nombre );
-Broker* Broker_t(char* nombre , char* nompipe , int pid);
-Orden* Orden_t( char tipo , char* nombre_emp , int cant ,  int precio , char* nombreb);
+Broker* Broker_t(char* nombre , int pid);
+Orden* Orden_t( char tipo , char* nombre_emp , int cant ,  int precio );
 Datos* Datos_t(int monto ,char* nombre , char* nombrepipe);
 Mensaje* Mensaje_t(Orden* orden,int pid,char* pipename);
 /* Comparadores para lista */
-int comparator_venta(const void *a1 , const void *b1);
-int comparator_compra(const void *a1 , const void *b1);
 int comparator_orden(const void *a1 , const void *b1);
+int comparator_broker(const void *a1 , const void *b1);
 /* Utilidades */
 void print_t(const void *elemento);
+void printb_t(const void *elemento);
 void to_lowercase(char* str);
 void add_empresa(Datos* broker,Empresa* empresa);
 #endif // !__UTILS_H
