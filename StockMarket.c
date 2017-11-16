@@ -2,7 +2,7 @@
 
 void ImprimimrOrdenes();
 void Procesar_Orden(Mensaje mensaje);
-void avisar(char* broker1 , char* broker2 , Respuesta *r);
+void avisar(Orden* broker1 , Orden* broker2 , int d);
 
 list_t* compras;
 list_t* ventas;
@@ -57,8 +57,10 @@ void ImprimimrOrdenes(){
 }
 //========================================================================
 void Procesar_Orden(Mensaje mensaje){
-  int band =0,resta = 0;
+  int band =0,resta = 0 ;
   Broker* auxb = Broker_t(mensaje.pipename,mensaje.pid) ;
+  Orden* auxo,*ocomp,*ovent ;
+  Respuesta* auxr ;
   if(get_node(brokers,(const void *)auxb) == NULL){
     add_order(brokers,(const void *) auxb);
   }else{
@@ -66,47 +68,68 @@ void Procesar_Orden(Mensaje mensaje){
   }
   if((mensaje.orden)->tip = 'C'){
     //compra
+    ocomp = mensaje.orden;
     if(isEmpty(ventas)){
       add_order(compras,(const void *) mensaje.orden);
     }else{
       last_t(ventas);
       while (ventas->window != NULL && band == 0) {
-        if((mensaje.orden)->precio <= ((Orden *)((compras->window)->value))->precio ){
-          band = 1;
+        ovent = (Orden *)((compras->window)->value) ;
+        if(ocomp->precio >= ovent->precio && strcmp(ocomp->empresa , ovent->empresa) == 0){
+          resta = ovent->cantidad - ocomp->cantidad;
+          if (resta == 0){
+            band = 1;
+            avisar(ovent , ocomp , 0);
+            del_t(ventas);
+          }else if(resta > 0){
+            band = 1 ;
+            ovent->cantidad = resta ;
+            avisar(ovent , ocomp , 0);
+          }else{
+            ocomp->cantidad = (resta)*-1;
+            avisar(ovent , ocomp , 0);
+            del_t(ventas);
+          }
+        }else{
+          back_t(ventas);
         }
-        back_t(ventas);
       }
       if(band == 0){
-        add_order(compras ,(const void *) mensaje.orden);
+        add_order(compras ,(const void *) ocomp);
       }
     }
   }else{
     if((mensaje.orden)->tip = 'V'){
       //venta
+      ovent = mensaje.orden;
       if(isEmpty(compras)){
         add_order(ventas,(const void *) mensaje.orden);
       }else{
         home_t(compras);
         while (compras->window != NULL && band == 0) {
-          if((mensaje.orden)->precio <= ((Orden *)((compras->window)->value))->precio ){
-            band = 1;
-            resta = ((Orden *)((compras->window)->value))->cantidad - (mensaje.orden)->cantidad;
+          ocomp = (Orden *)(compras->window)->value;
+          if(ovent->precio <= ocomp->precio && strcmp(ocomp->empresa , ovent->empresa) == 0){
+            resta = ocomp->cantidad - ovent->cantidad;
             if(resta == 0){
-              //NOTIFICAR A LOS DOS BROKERS
+              band = 1 ;
+              avisar(ovent , ocomp , 1);
               del_t(compras);
             }else if (resta > 0){
-              //LAS COMPRAS TIENEN MAS QUE LAS VENTAS
+              band = 1 ;
+              ovent->cantidad = resta ;
+              avisar(ovent , ocomp , 1);
             }else{
-              //notificar las ventas tiene mas que compra
+              ovent->cantidad = (resta)*-1 ;
+              avisar(ovent , ocomp , 1);
               del_t(compras);
-
-              //MENOR QUE CERO
+              home_t(compras);
             }
+          }else{
+            next_t(compras);
           }
-          next_t(compras);
         }
         if(band == 0){
-          add_order(ventas,(const void *) mensaje.orden);
+          add_order(ventas,(const void *) ovent);
         }
       }
     }
@@ -114,32 +137,41 @@ void Procesar_Orden(Mensaje mensaje){
 
 }
 //========================================================================
-void avisar(char* broker1 , char* broker2 , Respuesta *r){
-  int fd1,fd2 ;
+void avisar(Orden* broker1 , Orden* broker2 , int d){
+  int fd1,fd2,precio ;
   Broker* baux ;
+  Respuesta *respuesta;
+
+  if (d == 1){
+    precio = broker1->precio;
+  }else{
+    precio = broker2->precio;
+  }
   if(broker1 != NULL){
+    respuesta = Respuesta_t('C',broker1->cantidad, precio , broker1->empresa , broker2->broker);
     do{
-      fd1 = open(broker1, O_WRONLY|O_NONBLOCK);
+      fd1 = open(broker1->broker, O_WRONLY|O_NONBLOCK);
       perror(" Market abriendo pipe de respuesta : ");
       printf(" Se volvera a intentar despues\n");
       //sleep(5); //los unicos sleeps que deben colocar son los que van en los ciclos para abrir los pipes.
     }while(fd1 < 0 );
-    baux = (Broker*)(get_node(brokers,(const void *) Broker_t(broker1,1111) ))->value;
-    write(fd1, &r, sizeof(struct Resp));
+    baux = (Broker*)(get_node(brokers,(const void *) Broker_t(broker1->broker,1111) ))->value;
+    write(fd1, &respuesta, sizeof(struct Resp));
     if ( kill (baux->pid, SIGUSR1) == -1){
       perror("Kill : ");
       exit(1);
     }
   }
   if(broker2 != NULL){
+    respuesta = Respuesta_t('C',broker2->cantidad, precio , broker2->empresa , broker1->broker);
     do{
-      fd2 = open(broker2, O_WRONLY|O_NONBLOCK);
+      fd2 = open(broker2->broker, O_WRONLY|O_NONBLOCK);
       perror(" Market abriendo pipe de respuesta : ");
       printf(" Se volvera a intentar despues\n");
       //sleep(5); //los unicos sleeps que deben colocar son los que van en los ciclos para abrir los pipes.
     }while(fd2 < 0 );
-    baux = (Broker*)(get_node(brokers,(const void *) Broker_t(broker2,1111) ))->value;
-    write(fd2, &r, sizeof(struct Resp));
+    baux = (Broker*)(get_node(brokers,(const void *) Broker_t(broker2->broker,1111) ))->value;
+    write(fd2, &respuesta, sizeof(struct Resp));
     if ( kill (baux->pid, SIGUSR1) == -1){
       perror("Kill : ");
       exit(1);
