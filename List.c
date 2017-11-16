@@ -177,15 +177,41 @@ void back_t(list_t* list){
 void home_t(list_t* list){
   list->window = list->head;
 }
-//===========================================================
-void last_t(list_t* list){
-  list->window = list->last;
-}
-//===========================================================
-void del_t(list_t* list){
-  ((list->window)->next)->back = (list->window)->back ;
-  ((list->window)->back)->next = (list->window)->next ;
-  free(list->window);
-  list->window = list->head;
-}
-//===========================================================
+  //===========================================================
+  void last_t(list_t* list){
+    list->window = list->last;
+  }
+  //===========================================================
+  void del_t(list_t* list){
+    node_t* aux = list->window ;
+    if(aux == list->head){
+      if(list->last == list->head){
+        list->head = NULL ;
+        list->last = NULL ;
+      }else {
+
+        list->head = aux->next ;
+        aux->back = NULL ;
+
+      }
+
+    }else if(list->last == aux){
+        list->last = aux->back ;
+        (list->last)->next = NULL ;
+      }else{
+        (aux->back)->next = aux->next;
+        (aux->next)->back = aux->back;
+      }
+    //list->window = list->head;
+    free(aux);
+  }
+  //===========================================================
+  void pop(list_t* list){
+    if(list->last == list->head){
+      list->last = (list->head)->next ;
+    }
+    node_t* aux = list->head ;
+    list->head = aux->next ;
+    free(aux);
+  }
+  //===========================================================

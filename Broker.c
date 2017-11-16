@@ -5,7 +5,7 @@
 /*se encarga de recibir las respuestas asincronas*/
 void *respuestaAsin(void *datos);
 /*se encargar de recibir los comandos del usuario*/
-void *manejoUsuario(void *datos);
+void *manejoUsuario();
 /*se encarga de leer los datos del archivo*/
 void leerDatos(char *arch);
 /*se encarga que los datos esten correctos para despues enviarlos
@@ -23,6 +23,7 @@ void manejoConsulta(Respuesta respu);
 int maxAcciones(char* empresa);
 Datos *datos;
 int fd1,fd ;
+
 int main(int argc, char const *argv[])
 {
   signal(SIGUSR1,sig_handler);
@@ -63,32 +64,35 @@ int main(int argc, char const *argv[])
   /*crear hilo recepcion respuesta  asincrona*/
   /* crear hilo para comandos */
 
-  if (pthread_create(&thread1, NULL, respuestaAsin, (void *)&datos) != 0)
+  /*if (pthread_create(&thread1, NULL, respuestaAsin, (void *)&datos) != 0)
   {
-    perror("Hilo : ");
-    exit(2);
-  }
-  if (pthread_create(&thread2, NULL, manejoUsuario, (void *)&datos) != 0)
-  {
-    perror("Hilo : ");
-    exit(2);
-  }
-
-
-  int *joinh;
-  if (pthread_join(thread1, (void **)&joinh) != 0)
-  {
-    perror("Error: ");
-    exit(2);
-  }
-  if (pthread_join(thread2, (void **)&joinh) != 0)
-  {
-    perror("Error: ");
-    exit(2);
-  }
+  perror("Hilo : ");
+  exit(2);
+}
+if (pthread_create(&thread2, NULL, manejoUsuario, (void *)&datos) != 0)
+{
+perror("Hilo : ");
+exit(2);
+}
 
 
 
+int *joinh;
+if (pthread_join(thread1, (void **)&joinh) != 0)
+{
+perror("Error: ");
+exit(2);
+}
+if (pthread_join(thread2, (void **)&joinh) != 0)
+{
+perror("Error: ");
+exit(2);
+}
+
+*/
+//respuestaAsin();
+manejoUsuario();
+exit(0);
 }
 void *respuestaAsin(void *datos)
 {
@@ -101,13 +105,19 @@ void *respuestaAsin(void *datos)
 */
 }
 
-void *manejoUsuario(void *Datos)
-{ 
-  fd1 = open(d)
+void *manejoUsuario()
+{
+  signal(SIGUSR1,sig_handler);
   int continuar;
   Orden *orden;
   char *comando = (char*)malloc(sizeof(char) * TAMNOMBRE);
   continuar = 1;
+  //fd1 = open(datos->pipename , O_RDONLY | O_NONBLOCK);
+  //if(fd1 <= 0){
+  //  printf("\n No me abri");
+  //}else{
+  //  printf("\n Me abri con %d ",fd1);
+  //}
   printf("%s\n","Ingrese un comando" );
   while (continuar)
   {
@@ -264,7 +274,7 @@ Orden *validarEntrada(char *comando)
       }
     }
 
-    if (strcmp(tipo, "consulta") == 0 && empresa == NULL)
+    if (strcmp(tipo, "consulta") == 0 && empresa != NULL)
     {
       return Orden_t('Q', empresa, -1, -1 , datos->nombre);
     }
@@ -356,18 +366,31 @@ void estadoBroker()
 void sig_handler(int sengnal)
 {
   printf("%s\n","Entre en el handler " );
-  int creado, fd,n;
-  Respuesta *respuesta;
-  do
-  {
-    n = read(fd1, respuesta, sizeof(struct Resp));
-    printf("N -- >%d\n",n );
-  } while (n < 0);
+  int creado,n;
+  Respuesta respuesta;
 
-  printRespuesta(*respuesta);
+  creado = 0 ;
+  do {
+    fd1 = open (datos->nombre, O_RDONLY );
+    if (fd1 == -1) {
+      perror("pipe");
+      printf(" Se volvera a intentar despues\n");
+      //sleep(5);
+    } else{
+      creado = 1;
+    }
+  } while (creado == 0);
 
-  printf("entre al SIGNAL\n");
+  do{
+    n = read(fd1,&respuesta,sizeof(Respuesta));
+  }while(n <= 0);
+  printf("---> %c\n", respuesta.tipo);
+  close(fd1);
+  //printRespuesta(*respuesta);
+
 }
+
+
 
 void printRespuesta(Respuesta respu)
 {
