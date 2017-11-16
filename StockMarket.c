@@ -9,6 +9,7 @@ list_t* compras;
 list_t* ventas;
 list_t* brokers;
 
+int fd1 ;
 
 int main(int argc, char const *argv[])
 {
@@ -51,10 +52,19 @@ int main(int argc, char const *argv[])
     do{
       n = read(fd,&mensaje,sizeof(Mensaje));
     }while(n <= 0);
-    close(fd);
+
+
+    do{
+      fd1 = open(mensaje.pipename,O_WRONLY | O_NONBLOCK);
+      perror(" Market abriendo pipe de respuesta : ");
+      printf(" Se volvera a intentar despues\n");
+      //sleep(5); //los unicos sleeps que deben colocar son los que van en los ciclos para abrir los pipes.
+    }while(fd1 < 0 );
+
     Procesar_Orden(mensaje);
     print(compras,0);
     printf("%s\n","Orden Procesada !" );
+    close(fd);
   }
 }
 //========================================================================
@@ -250,12 +260,8 @@ void avisar(Orden* broker1 , Orden* broker2 , int d){
       perror("Kill : ");
       exit(1);
     }
-    do{
-      fd1 = open(broker1->broker,O_WRONLY);
-      perror(" Market abriendo pipe de respuesta : ");
-      printf(" Se volvera a intentar despues\n");
-      //sleep(5); //los unicos sleeps que deben colocar son los que van en los ciclos para abrir los pipes.
-    }while(fd1 < 0 );
+    sleep(5);
+
     write(fd1, respuesta, sizeof(struct Resp));
 
 
