@@ -32,5 +32,6 @@ void back_t(list_t* list);
 void home_t(list_t* list);
 void last_t(list_t* list);
 void del_t(list_t* list);
+void pop(list_t* list);
 
 #endif
