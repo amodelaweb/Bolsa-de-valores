@@ -16,7 +16,7 @@ int enviarDatos(Orden *orden);
 void printRespuesta(Respuesta respu);
 void sig_handler(int sengnal);
 void estadoBroker();
-int validarEmpresa(char *empresa);
+int validarEmpresa(char *empresa, int acciones);
 Datos *datos;
 
 int main(int argc, char const *argv[])
@@ -184,7 +184,6 @@ Orden *validarEntrada(char *comando)
   else{
     tipo = NULL;
   }
-  printf("%s\n","LLEGUE AQUI JEJEJEJEJEJJEJ " );
   token = strtok(NULL, s);
   if (token != NULL && strcmp(token, "\n") != 0)
   {
@@ -192,16 +191,18 @@ Orden *validarEntrada(char *comando)
     strcpy(empresa, token);
   }
   else
-  empresa = NULL;
-
+  {
+    empresa = NULL;
+  }
   token = strtok(NULL, s);
   if (token != NULL && strcmp(token, "\n") != 0)
   {
     acciones = malloc(sizeof(char) * TAMNOMBRE);
     strcpy(acciones, token);
   }
-  else
-  acciones = NULL;
+  else{
+    acciones = NULL;
+  }
 
   token = strtok(NULL, s);
   if (token != NULL && strcmp(token, "\n") != 0)
@@ -209,9 +210,9 @@ Orden *validarEntrada(char *comando)
     precio = malloc(sizeof(char) * 30);
     strcpy(precio, token);
   }
-  else
-  precio = NULL;
-
+  else{
+    precio = NULL;
+  }
   /*validacion de datos
   los datos que el broker puede validar son
   el tipo de comando
@@ -230,12 +231,14 @@ Orden *validarEntrada(char *comando)
     if (strcmp(tipo, "venta") == 0)
     {
       // existen dos tipos
-      if (validarEmpresa(empresa) == 0)
+
+      if (validarEmpresa(empresa,atoi(acciones)) == 0)
       {
         printf("Error: no se puede realizar la venta\n");
         printf("no existe el nombre de la empresa\n");
         return NULL;
       }
+
       if (acciones == NULL && precio == NULL)
       {
         return Orden_t('V', empresa, atoi(acciones), -1,datos->nombre);
@@ -273,11 +276,14 @@ int enviarDatos(Orden *orden)
   Mensaje *mensaje;
   printf("Pipe ---> %s\n", datos->pipename);
   mensaje = Mensaje_t(orden,datos->pid,datos->nombre);
-  int fd, creado;
+  int fd, creado,n;
   creado = 0;
+
   do
   {
-    if ((fd = open(datos->pipename, O_RDONLY | O_NONBLOCK)) == -1)
+    fd = open(datos->pipename, O_RDONLY );
+
+    if ( fd == -1)
     {
       perror(" Cliente  Abriendo el segundo pipe. Se volvera a intentar ");
       sleep(5);
@@ -285,27 +291,36 @@ int enviarDatos(Orden *orden)
     else
     {
       creado = 1;
-      printf("\n Eh abierto el pipe");
+      printf("\n Eh abierto el pipe \n");
     }
   } while (creado == 0);
-  write(fd,mensaje, sizeof(struct Mns));
-  printf("Se ha enviado la orden al stock market \n");
+
+  if(write(fd,mensaje, sizeof(struct Mns)) == -1){
+    perror(" Write ");
+    exit(2);
+  }
+  printf("Se ha enviado la orden al stock market %d \n",n);
   close(fd);
   return 1 ;
 }
 
-int validarEmpresa(char *empresa)
+int validarEmpresa(char *empresa, int acciones)
 {
-  int i;
+  int i, band = 0 ;
   int tam = datos->tam ;
-  for(i=0; i< tam; tam++)
+  for(i=0; i< tam && band == 0; i++)
   {
+
     if(strcmp(((datos->empresas)[i]).nombre,empresa) == 0)
     {
-      return 1;
+      if(((datos->empresas)[i]).acciones >= acciones){
+        band = 1 ;
+      }
     }
+
   }
-  return 0;
+
+  return band;
 }
 /*utlilzado cuando se escribe el comando monto*/
 void estadoBroker()

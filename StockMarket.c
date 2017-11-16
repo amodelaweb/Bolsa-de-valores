@@ -37,16 +37,20 @@ int main(int argc, char const *argv[])
   while(1){
     creado = 0 ;
     do {
-      fd = open (argv[1], O_RDONLY);
+      fd = open (argv[1], O_RDONLY );
       if (fd == -1) {
         perror("pipe");
         printf(" Se volvera a intentar despues\n");
         //sleep(5);
-      } else creado = 1;
+      } else{
+        creado = 1;
+      }
     } while (creado == 0);
+    printf("%s\n", "Pipe abierto");
     do{
       n = read(fd,&mensaje,sizeof(struct Mns));
-    }while(n < 0);
+      printf("n ---> %d\n", n);
+    }while(n <= 0);
     close(fd);
     Procesar_Orden(mensaje);
   }
@@ -137,7 +141,7 @@ void Procesar_Orden(Mensaje mensaje){
       last_t(ventas);
       while(compras->window != NULL && band == 0){
         if(strcmp(((Orden*)((compras->window)->value))->empresa , (mensaje.orden)->empresa) == 0){
-          band = 1 ; 
+          band = 1 ;
         }else{
           next_t(compras);
         }
