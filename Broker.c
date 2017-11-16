@@ -563,11 +563,9 @@ void printRespuesta(Respuesta respu)
 
 /*
   ***************************************************************************************************************
-  Funcion: Primos
-  Descripcion: Es la fucion que sera ejecutada por cada hilo,
-	verificara que cada numero del rango que le corresponde sea primo
-  Parametros de entrada:
-  -datos:	Nodo donde se encuentra almacenados los datos y el arrglos de primos del hilo
+  Funcion: manejo venta
+  Descripcion: se encargar de actualzar los datos que se ven modificados por una venta
+  -respuesta:	estructura que contiene una venta
 
   Parametro que devuelve: No devuelve nada
   ***************************************************************************************************************
@@ -593,11 +591,10 @@ void manejoVenta(Respuesta respu)
 }
 /*
   ***************************************************************************************************************
-  Funcion: Primos
-  Descripcion: Es la fucion que sera ejecutada por cada hilo,
-	verificara que cada numero del rango que le corresponde sea primo
+  Funcion: manejoCompra
+  Descripcion: se encarga de actualizar los datos que se ven modificados por una compra
   Parametros de entrada:
-  -datos:	Nodo donde se encuentra almacenados los datos y el arrglos de primos del hilo
+  -respuesta:	estrcutura que contiene una compra
 
   Parametro que devuelve: No devuelve nada
   ***************************************************************************************************************
@@ -630,11 +627,10 @@ void manejoCompra(Respuesta respu)
 }
 /*
   ***************************************************************************************************************
-  Funcion: Primos
-  Descripcion: Es la fucion que sera ejecutada por cada hilo,
-	verificara que cada numero del rango que le corresponde sea primo
+  Funcion: manejoConsulta
+  Descripcion: se encarga de manejar la respuesta de una consulta
   Parametros de entrada:
-  -datos:	Nodo donde se encuentra almacenados los datos y el arrglos de primos del hilo
+  -respuesta:	estrcutura que contiene una consulta
 
   Parametro que devuelve: No devuelve nada
   ***************************************************************************************************************
@@ -657,13 +653,13 @@ void manejoConsulta(Respuesta respu)
 
 /*
   ***************************************************************************************************************
-  Funcion: Primos
-  Descripcion: Es la fucion que sera ejecutada por cada hilo,
-	verificara que cada numero del rango que le corresponde sea primo
+  Funcion: maxAcciones
+  Descripcion: se encarga de buscar una empresa y retornar el numero total de acciones que 
+  tienen esa empresa.
   Parametros de entrada:
-  -datos:	Nodo donde se encuentra almacenados los datos y el arrglos de primos del hilo
+  -empresa:	nombre de la empresa a buscar
 
-  Parametro que devuelve: No devuelve nada
+  Parametro que devuelve: el numero total de acciones que tiene la empresa
   ***************************************************************************************************************
   */
 int maxAcciones(char *empresa)
