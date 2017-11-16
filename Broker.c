@@ -17,7 +17,10 @@ void printRespuesta(Respuesta respu);
 void sig_handler(int sengnal);
 void estadoBroker();
 int validarEmpresa(char *empresa, int acciones);
-Datos *datos;
+void manejoCompra(Respuesta respu);
+void manejoVenta(Respuesta respu);
+void manejoConsulta(Respuesta respu);
+    Datos *datos;
 
 int main(int argc, char const *argv[])
 {
@@ -235,13 +238,13 @@ Orden *validarEntrada(char *comando)
       if (validarEmpresa(empresa,atoi(acciones)) == 0)
       {
         printf("Error: no se puede realizar la venta\n");
-        printf("no existe el nombre de la empresa\n");
+        printf("no existe el nombre de la empresa o el no se tienen la cantida de acciones a vender\n");
         return NULL;
       }
 
       if (acciones == NULL && precio == NULL)
       {
-        return Orden_t('V', empresa, atoi(acciones), -1,datos->nombre);
+        return Orden_t('T', empresa, atoi(acciones), -1,datos->nombre);
       }
       else
       {
@@ -256,7 +259,16 @@ Orden *validarEntrada(char *comando)
 
     if (strcmp(tipo, "compra") == 0)
     {
-      return Orden_t('C', empresa, atoi(acciones), atoi(precio) , datos->nombre);
+        if((atoi(acciones)*atoi(precio)) <= datos->monto)
+        {
+            return Orden_t('C', empresa, atoi(acciones), atoi(precio), datos->nombre);
+        }
+        else
+        {
+            printf("No dispone de dinero suficiente para realizar la transaccion\n");
+            return NULL;
+        }
+      
     }
   }
   else
@@ -356,35 +368,97 @@ void sig_handler(int sengnal)
   printRespuesta(*respuesta);
 }
 
-void printRespuesta(Respuesta respu)
+void printRespuesta(Respuesta &respu)
 {
 
   if(respu.tipo =='C')
   {
     printf("===============================================\n");
-    printf("Se ha la compra exitosa de: \n");
+    printf("Se ha realizado la compra exitosa de: \n");
     printf("Acciones de la empresa: %s \n", (char*)respu.empresa);
     printf("acciones compradas: %d \n",respu.acciones);
     printf("con un monto total de: %d \n",(respu.acciones * respu.monto));
     printf("por medio del broker: %s \n",(char*)respu.brokers);
     printf("===============================================\n");
+    manejoCompra(respu);
   }
   if (respu.tipo == 'V')
   {
     printf("===============================================\n");
-    printf("se ha la compra exitosa de: \n");
+    printf("se ha  realizado la venta exitosa de: \n");
     printf("acciones de la empresa: %s \n", (char*)respu.empresa);
-    printf("acciones compradas: %d \n",respu.acciones);
+    printf("acciones vendidas: %d \n",respu.acciones);
     printf("con un monto total de: %d \n",(respu.acciones * respu.monto));
     printf("por medio del broker: %s \n", (char*)respu.brokers);
     printf("===============================================\n");
+    manejoVenta(respu);
   }
   if (respu.tipo == 'Q')
   {
-    printf("===============================================\n");
-    printf("Se realizo la consulta: ,\n");
-    printf("Precio de las acciones de la empresa: %s",(char*)respu.empresa);
-    printf("El precio de la acciones es: %d", respu.monto);
-    printf("===============================================\n");
+    manejoConsulta(respu);
   }
 }
+
+void manejoVenta(Respuesta respu)
+{
+    int i;
+    int ban;
+    ban = 0;
+    datos->monto += respu.monto;
+    for(i=0;i<tam && ban == 0;i++)
+    {
+        if(strcmp((datos->empresas)[i].nombre, respu.empresa)==0)
+        {
+            (datos->empresas)[i].acciones -= respu.cantidad;
+            ban = 1;
+        }
+    }
+    if(ban == 1)
+    {
+        printf("se realizo correctamente la acutalizacion de datos\n");
+    }
+}
+void manejoCompra(Respuesta respu)
+{
+    int i;
+    int ban;
+    Empresa empresa;
+    ban = 0;
+    datos->monto -= respu.monto;
+    for (i = 0; i < tam && ban == 0; i++)
+    {
+        if (strcmp((datos->empresas)[i].nombre, respu.empresa) == 0)
+        {
+            (datos->empresas)[i].acciones += respu.cantidad;
+            ban = 1;
+        }
+    }
+    if (ban == 1)
+    {
+        printf("Se realizo correctamente la acutalizacion de datos\n");
+    }
+    else
+    {
+        empresa.nombre = respu.empresa;
+        empresa.acciones = respu.acciones;
+        add_empresa(datos, empresa);
+        printf("Se agrego una nueva empresa a su lista de empresas\n");
+    }
+}
+void manejoConsulta(Respuesta respu)
+{
+    if(repu.cantidad == -1)
+    {
+        printf("No existe la empresa actualmente en le sistema \n")
+    }
+    else
+    {
+        printf("====================================================\n");
+        printf("El precio de acciones de la empresa %s es:\n",respu.empresa);
+        printf("Precio venta:  %d", respu.cantidad);
+        printf("Precio compra: %d", respu.precio);
+        printf("====================================================\n");
+    }
+    
+}
+
