@@ -15,6 +15,8 @@
 #include <sys/stat.h>
 #include <signal.h>
 #include <fcntl.h>
+#include <sys/wait.h>
+
 
 #define TAMNOMBRE 20
 #define maxchar 20

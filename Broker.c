@@ -40,8 +40,8 @@ int main(int argc, char const *argv[])
   printf("Datos del broker cargados \n");
   for(i=0;i<datos->tam;i++)
   {
-      printf("NOOMBRE: %s \n", (datos->empresas)[i].nombre);
-      printf("ACCIONES: %d \n", (datos->empresas)[i].acciones);
+    printf("NOOMBRE: %s \n", (datos->empresas)[i].nombre);
+    printf("ACCIONES: %d \n", (datos->empresas)[i].acciones);
   }
   /*creacion de pipe */
   unlink(datos->nombre);
@@ -66,9 +66,26 @@ int main(int argc, char const *argv[])
     perror("Hilo : ");
     exit(2);
   }
+
+
+  int *joinh;
+  if (pthread_join(thread1, (void **)&joinh) != 0)
+  {
+    perror("Error: ");
+    exit(2);
+  }
+  if (pthread_join(thread2, (void **)&joinh) != 0)
+  {
+    perror("Error: ");
+    exit(2);
+  }
+
+
+
 }
 void *respuestaAsin(void *datos)
 {
+  //printf("%s\n","llegue aqui :D" );
 }
 
 void *manejoUsuario(void *Datos)
@@ -77,6 +94,7 @@ void *manejoUsuario(void *Datos)
   Orden *orden;
   char *comando = (char*)malloc(sizeof(char) * TAMNOMBRE);
   continuar = 1;
+  printf("%s\n","Ingrese un comando" );
   while (continuar)
   {
     printf("~$ ");
@@ -87,6 +105,8 @@ void *manejoUsuario(void *Datos)
     if (orden != NULL)
     {
       enviarDatos(orden);
+    }else{
+      printf("\t Datos invalidos !\n");
     }
 
   }
@@ -99,10 +119,9 @@ void leerDatos(char *arch)
   char *nomEmpr;
   Empresa *empresa;
   char *token;
-  char s[2];
+  char* s1 = " ";
   int acciones;
 
-  s[2] = ' ';
   nomEmpr = (char*)malloc(sizeof(char) * maxchar);
   linea = (char*)malloc( sizeof(char ) * maxchar);
 
@@ -121,11 +140,11 @@ void leerDatos(char *arch)
       fgets(linea, maxchar, archivo);
       printf("LINEA: %s \n", linea);
       /* get the first token */
-      token = strtok(linea, s);
-        printf("Token1: %s \n",token);
+      token = strtok(linea, s1);
+      printf("Token1: %s \n",token);
       /* walk through other tokens */
       strcpy(nomEmpr, token);
-      token = strtok(NULL, s);
+      token = strtok(NULL, s1);
       printf("Token2: %s \n", token);
       acciones = atoi(token);
 
@@ -146,7 +165,7 @@ Orden *validarEntrada(char *comando)
   -   acciones
   -   precio
   */
-  const char s[2] = ":";
+  char* s = ":";
   char *tipo;
   char *empresa;
   char *acciones;
@@ -162,9 +181,10 @@ Orden *validarEntrada(char *comando)
     tipo = malloc(sizeof(char) * TAMNOMBRE);
     strcpy(tipo, token);
   }
-  else
-  tipo = NULL;
-
+  else{
+    tipo = NULL;
+  }
+  printf("%s\n","LLEGUE AQUI JEJEJEJEJEJJEJ " );
   token = strtok(NULL, s);
   if (token != NULL && strcmp(token, "\n") != 0)
   {
@@ -246,10 +266,12 @@ Orden *validarEntrada(char *comando)
     printf("    *) monto\n");
     return NULL;
   }
+
 }
 int enviarDatos(Orden *orden)
 {
   Mensaje *mensaje;
+  printf("Pipe ---> %s\n", datos->pipename);
   mensaje = Mensaje_t(orden,datos->pid,datos->nombre);
   int fd, creado;
   creado = 0;
