@@ -22,7 +22,7 @@ void manejoVenta(Respuesta respu);
 void manejoConsulta(Respuesta respu);
 int maxAcciones(char* empresa);
     Datos *datos;
-
+    int fd1 ;
 int main(int argc, char const *argv[])
 {
   signal(SIGUSR1, sig_handler);
@@ -60,7 +60,7 @@ int main(int argc, char const *argv[])
   /*crear hilo recepcion respuesta  asincrona*/
   /* crear hilo para comandos */
 
-  if (pthread_create(&thread1, NULL, respuestaAsin, (void *)&datos) != 0)
+  /*if (pthread_create(&thread1, NULL, respuestaAsin, (void *)&datos) != 0)
   {
     perror("Hilo : ");
     exit(2);
@@ -69,7 +69,8 @@ int main(int argc, char const *argv[])
   {
     perror("Hilo : ");
     exit(2);
-  }
+}
+
 
 
   int *joinh;
@@ -84,8 +85,10 @@ int main(int argc, char const *argv[])
     exit(2);
   }
 
-
-
+*/
+//respuestaAsin();
+manejoUsuario();
+exit(0);
 }
 void *respuestaAsin(void *datos)
 {
@@ -98,10 +101,16 @@ void *respuestaAsin(void *datos)
 
 void *manejoUsuario(void *Datos)
 {
+
+  signal(SIGUSR1,sig_handler);
   int continuar;
   Orden *orden;
   char *comando = (char*)malloc(sizeof(char) * TAMNOMBRE);
   continuar = 1;
+  fd1 = open(fd1,datos->broker , O_RDONLY | O_NONBLOCK);
+  if(fd1 <= 0){
+      printf("\No me abri");
+  }
   printf("%s\n","Ingrese un comando" );
   while (continuar)
   {
@@ -258,7 +267,7 @@ Orden *validarEntrada(char *comando)
       }
     }
 
-    if (strcmp(tipo, "consulta") == 0 && empresa == NULL)
+    if (strcmp(tipo, "consulta") == 0 && empresa != NULL)
     {
       return Orden_t('Q', empresa, -1, -1 , datos->nombre);
     }
