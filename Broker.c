@@ -31,7 +31,7 @@ int main(int argc, char const *argv[])
   if (argc < 5)
   {
     printf("\nUso incorrecto \n");
-    printf("Uso: ./%s pipename recursos_iniciales monto \n", argv[0]);
+    printf("Uso: %s brokername pipestockmarket recursos_iniciales monto \n", argv[0]);
     exit(1);
   }
   datos = Datos_t(atoi(argv[4]), (char*)(argv[1]), (char*)argv[2]);
@@ -114,8 +114,6 @@ void leerDatos(char *arch)
     {
       fgets(linea, maxchar, archivo);
       printf("%s", linea);
-      //
-
       /* get the first token */
       token = strtok(linea, s);
 
@@ -123,12 +121,15 @@ void leerDatos(char *arch)
       printf(" %s\n", token);
       strcpy(nomEmpr, token);
       token = strtok(NULL, s);
+      printf("=1111========= %s\n",token);
       acciones = atoi(token);
+
       empresa = Empresa_t(acciones, nomEmpr);
       add_empresa(datos,empresa);
 
     }
   }
+
   fclose(archivo);
 }
 
