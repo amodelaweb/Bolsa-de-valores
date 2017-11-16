@@ -1,13 +1,15 @@
 #ifndef ORDEN_H_
 #define ORDEN_H_
 
+#define TAMNOMBRE 20
+
 typedef struct Orden
 {
-   char* empresa;
+   char empresa[TAMNOMBRE];
    int precio;
    int cantidad;
    char tip;
-   char* broker;
+   char broker[TAMNOMBRE];
   } Orden;
 /*
 tipo:
@@ -19,8 +21,8 @@ broker: representa al nombre del del broker involucrado
 typedef struct Resp
 {
   char tipo;
-  char* empresa;
-  char* brokers;
+  char empresa[TAMNOMBRE];
+  char brokers[TAMNOMBRE];
   int acciones ;
   int monto ;
 }Respuesta;
@@ -29,9 +31,9 @@ el pipe name es el nonmbre del broker
 */
 typedef struct Mns
 {
-  Orden* orden;
+  Orden orden;
   int pid;
-  char* pipename;
+  char pipename[TAMNOMBRE];
 }Mensaje;
 
 #endif

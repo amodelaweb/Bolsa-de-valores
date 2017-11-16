@@ -274,14 +274,14 @@ Orden *validarEntrada(char *comando)
 int enviarDatos(Orden *orden)
 {
   Mensaje *mensaje;
-  printf("Pipe ---> %s\n", datos->pipename);
+
   mensaje = Mensaje_t(orden,datos->pid,datos->nombre);
   int fd, creado,n;
   creado = 0;
 
   do
   {
-    fd = open(datos->pipename, O_RDONLY );
+    fd = open(datos->pipename, O_WRONLY|O_NONBLOCK );
 
     if ( fd == -1)
     {
@@ -295,11 +295,12 @@ int enviarDatos(Orden *orden)
     }
   } while (creado == 0);
 
-  if(write(fd,mensaje, sizeof(struct Mns)) == -1){
+  if(write(fd,mensaje, sizeof(Mensaje)) == -1){
     perror(" Write ");
     exit(2);
   }
-  printf("Se ha enviado la orden al stock market %d \n",n);
+  printf("*----->  %d\n", sizeof(*mensaje));
+  printf("Se ha enviado la orden al stock market \n");
   close(fd);
   return 1 ;
 }

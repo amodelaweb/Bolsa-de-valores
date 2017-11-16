@@ -48,11 +48,11 @@ int main(int argc, char const *argv[])
     } while (creado == 0);
     printf("%s\n", "Pipe abierto");
     do{
-      n = read(fd,&mensaje,sizeof(struct Mns));
-      printf("n ---> %d\n", n);
+      n = read(fd,&mensaje,sizeof(Mensaje));
     }while(n <= 0);
     close(fd);
     Procesar_Orden(mensaje);
+    print(ventas,0);
   }
 }
 //========================================================================
@@ -66,15 +66,19 @@ void Procesar_Orden(Mensaje mensaje){
   Orden* auxo,*ocomp,*ovent ;
   Respuesta* auxr ;
   if(get_node(brokers,(const void *)auxb) == NULL){
+    printf("%s\n","ES ESTO PA " );
     add_order(brokers,(const void *) auxb);
+    printf("%s\n","despues" );
   }else{
     free(auxb);
   }
-  if((mensaje.orden)->tip == 'C'){
+  if((mensaje.orden).tip == 'C'){
     //compra
-    ocomp = mensaje.orden;
+    ocomp = &mensaje.orden;
+    Orden* mend = Orden_t((mensaje.orden).tip , (mensaje.orden).empresa , (mensaje.orden).cantidad  , (mensaje.orden).precio , (mensaje.orden).broker);
     if(isEmpty(ventas)){
-      add_order(compras,(const void *) mensaje.orden);
+      add_order(compras,(const void *)mend );
+      printf("%s\n","Se registro la compra !." );
     }else{
       last_t(ventas);
       while (ventas->window != NULL && band == 0) {
@@ -103,17 +107,25 @@ void Procesar_Orden(Mensaje mensaje){
       }
     }
   }else{
-    if((mensaje.orden)->tip == 'V'){
+    if((mensaje.orden).tip == 'V'){
       //venta
-      ovent = mensaje.orden;
-      if(isEmpty(compras)){
-        add_order(ventas,(const void *) mensaje.orden);
+      ovent = &mensaje.orden;
+      Orden* mend = Orden_t((mensaje.orden).tip , (mensaje.orden).empresa , (mensaje.orden).cantidad  , (mensaje.orden).precio , (mensaje.orden).broker);
+      if(isEmpty(compras) == 1){
+        add_order(ventas,(const void *) mend);
+        printf("%s\n","Se registro la Venta !." );
       }else{
+        printf("PUEDE SER EL HOME \n");
         home_t(compras);
+        printf("NO ES EL HOME \n");
         while (compras->window != NULL && band == 0) {
+          printf("VALIDAMOS ? \n");
           ocomp = (Orden *)(compras->window)->value;
+          printf("PUEDE SER LA PROXIMA COMPARAION ? \n");
           if(ovent->precio <= ocomp->precio && strcmp(ocomp->empresa , ovent->empresa) == 0){
+            printf("NO ES PERO PUEDE SER RESTA \n");
             resta = ocomp->cantidad - ovent->cantidad;
+            printf("BUENO AL PARECER NO \n");
             if(resta == 0){
               band = 1 ;
               avisar(ovent , ocomp , 1);
@@ -136,11 +148,11 @@ void Procesar_Orden(Mensaje mensaje){
           add_order(ventas,(const void *) ovent);
         }
       }
-    }else if((mensaje.orden)->tip == 'Q'){
+    }else if((mensaje.orden).tip == 'Q'){
       home_t(compras);
       last_t(ventas);
       while(compras->window != NULL && band == 0){
-        if(strcmp(((Orden*)((compras->window)->value))->empresa , (mensaje.orden)->empresa) == 0){
+        if(strcmp(((Orden*)((compras->window)->value))->empresa , (mensaje.orden).empresa) == 0){
           band = 1 ;
         }else{
           next_t(compras);

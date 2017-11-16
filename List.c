@@ -58,15 +58,25 @@ node_t* get_node(list_t* list, const void* value){
   if(list->head != NULL){
     node_t* aux = list->head;
     while (aux != NULL && band == 0) {
-      aux = aux->next;
+
       if(aux != NULL){
         if(list->comparator(&aux->value,&value) == 0){
           band = 1 ;
+        }else{
+          aux = aux->next;
         }
+      }else{
+        aux = aux->next;
       }
     }
-    return aux  ;
+    if(band == 1){
+
+      return aux  ;
+    }else{
+      return NULL ;
+    }
   }
+
   return NULL ;
 }
 //==========================================================
@@ -94,7 +104,7 @@ void add_order(list_t* list , const void* value){
   if(list->head!=NULL){
     node_t* aux = list->head ;
     node_t* aux2 ;
-    if (list->comparator(&value , &aux->value) < 0){
+    if (list->comparator(&value , &aux->value) <= 0){
       list->head = node(value);
       (list->head)->next = aux ;
       aux->back = list->head;
@@ -108,11 +118,20 @@ void add_order(list_t* list , const void* value){
         (aux->next)->back = aux ;
         list->last = aux->next ;
       }else{
-        aux2 = aux->back ;
-        aux->back = node(value);
-        (aux->back)->back = aux2 ;
-        (aux->back)->next = aux ;
-        aux2->next = aux->back ;
+        if(list->comparator(&value,&aux->value) < 0){
+          aux2 = aux->back ;
+          aux->back = node(value);
+          (aux->back)->back = aux2 ;
+          (aux->back)->next = aux ;
+          aux2->next = aux->back ;
+        }else{
+
+          aux2 = aux->back ;
+          aux2->next = node(value);
+          (aux2->next)->back = aux2 ;
+          (aux2->next)->next = aux ;
+          aux->back = aux2->next;
+        }
       }
     }
   }else{
@@ -148,11 +167,11 @@ node_t* Add(node_t*node1, const void* value){
 }
 //===========================================================
 void next_t(list_t* list){
-    list->window = (list->window)->next;
+  list->window = (list->window)->next;
 }
 //===========================================================
 void back_t(list_t* list){
-    list->window = (list->window)->back;
+  list->window = (list->window)->back;
 }
 //===========================================================
 void home_t(list_t* list){

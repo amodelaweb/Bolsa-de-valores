@@ -11,6 +11,7 @@ Empresa* Empresa_t(int acciones ,char* nombre ){
 }
 //===============================================================================
 Broker* Broker_t(char* nombre , int pid){
+
   Broker *broker = (Broker*)malloc(sizeof(struct InfBroker)) ;
   broker->Broker = (char*)malloc((sizeof (char))*TAMNOMBRE) ;
   memset(broker->Broker, 0, sizeof broker->Broker);
@@ -21,12 +22,8 @@ Broker* Broker_t(char* nombre , int pid){
 //===============================================================================
 Orden* Orden_t( char tipo , char* nombre_emp , int cant ,  int precio , char* broker){
   Orden *orden = (Orden*)malloc(sizeof(struct Orden)) ;
-  orden->empresa = (char*)malloc((sizeof (char))*TAMNOMBRE) ;
-  memset(orden->empresa, 0, sizeof orden->empresa);
-  strncpy(orden->empresa, nombre_emp, sizeof orden->empresa - 1);
-  orden->broker = (char*)malloc((sizeof (char))*TAMNOMBRE) ;
-  memset(orden->broker, 0, sizeof orden->broker);
-  strncpy(orden->broker, broker, sizeof orden->broker - 1);
+  strcpy(orden->empresa,nombre_emp);
+  strcpy(orden->broker ,broker);
   orden->precio = precio ;
   orden->cantidad = cant ;
   orden->tip = tipo;
@@ -49,25 +46,19 @@ Datos* Datos_t(int monto , char* nombre , char* nombrepipe){
 //===============================================================================
 Mensaje* Mensaje_t(Orden* orden,int pid,char* pipename){
   Mensaje *mensaje = (Mensaje*)malloc(sizeof(struct Mns)) ;
-  mensaje->orden = orden ;
+  mensaje->orden = *orden ;
   mensaje->pid= pid ;
-  mensaje->pipename = (char*)malloc((sizeof (char))*TAMNOMBRE) ;
-  memset(mensaje->pipename, 0, sizeof mensaje->pipename);
-  strncpy(mensaje->pipename, pipename, sizeof mensaje->pipename - 1);
+  strcpy(mensaje->pipename,pipename);
   return mensaje ;
 }
 //===============================================================================
 Respuesta* Respuesta_t(char tipo, int acciones , int monto, char* empresa , char* broker){
   Respuesta *respuesta = (Respuesta*)malloc(sizeof(struct Resp)) ;
   respuesta->tipo = tipo;
-  respuesta->empresa = (char*)malloc((sizeof (char))*TAMNOMBRE) ;
-  memset(respuesta->empresa, 0, sizeof respuesta->empresa);
-  strncpy(respuesta->empresa, empresa, sizeof respuesta->empresa - 1);
+  strcpy(respuesta->empresa,empresa);
   respuesta->acciones = acciones ;
   respuesta->monto = monto ;
-  respuesta->brokers = (char*)malloc((sizeof (char))*TAMNOMBRE) ;
-  memset(respuesta->brokers, 0, sizeof respuesta->brokers);
-  strncpy(respuesta->brokers, broker, sizeof respuesta->brokers - 1);
+  strcpy(respuesta->brokers,broker);
   return respuesta ;
 }
 //===============================================================================
@@ -80,6 +71,7 @@ void add_empresa(Datos* broker,Empresa* empresa){
 int comparator_orden(const void *a1 , const void *b1){
   Orden **a = (Orden**)a1;
   Orden **b = (Orden**)b1;
+  printf("PRECIO 1 %d PRECIO 2 %d\n",(*a)->precio,(*b)->precio );
   if((*a)->precio > (*b)->precio){
     return -1 ;
   }else{
@@ -94,6 +86,7 @@ int comparator_orden(const void *a1 , const void *b1){
 int comparator_broker(const void *a1 , const void *b1){
   Broker **a = (Broker**)a1;
   Broker **b = (Broker**)b1;
+
   if(strcmp((*a)->Broker,(*b)->Broker) < 0){
     return -1 ;
   }else{

@@ -18,7 +18,6 @@
 #include <sys/wait.h>
 
 
-#define TAMNOMBRE 20
 #define maxchar 20
 
 /* Constructores */
