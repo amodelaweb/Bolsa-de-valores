@@ -33,7 +33,7 @@ void leerDatos(char *arch);
 si son correctos retorna 1*/
 Orden *validarEntrada(char *arch);
 /*envia los datos al stockMarket*/
-int enviarDatos(Orden *orden);
+void enviarDatos(Orden *orden);
 void printRespuesta(Respuesta respu);
 void sig_handler(int sengnal);
 void estadoBroker();
@@ -126,11 +126,9 @@ void *respuestaAsin(void *datos)
 }
 /*
   ***************************************************************************************************************
-  Funcion: Primos
-  Descripcion: Es la fucion que sera ejecutada por cada hilo,
-	verificara que cada numero del rango que le corresponde sea primo
-  Parametros de entrada:
-  -datos:	Nodo donde se encuentra almacenados los datos y el arrglos de primos del hilo
+  Funcion: manejoUsuario
+  Descripcion: se encargar de recibir los datos para las ordenes por parte del usuario
+  Parametros de entrada: no necesita nada
 
   Parametro que devuelve: No devuelve nada
   ***************************************************************************************************************
@@ -165,11 +163,10 @@ void *manejoUsuario()
 }
 /*
   ***************************************************************************************************************
-  Funcion: Primos
-  Descripcion: Es la fucion que sera ejecutada por cada hilo,
-	verificara que cada numero del rango que le corresponde sea primo
+  Funcion: leerDatos
+  Descripcion: se encarga de leer los datos del archivo
   Parametros de entrada:
-  -datos:	Nodo donde se encuentra almacenados los datos y el arrglos de primos del hilo
+  -arch:nombre del archivo donde se encuatran los datos
 
   Parametro que devuelve: No devuelve nada
   ***************************************************************************************************************
@@ -220,13 +217,13 @@ void leerDatos(char *arch)
 }
 /*
   ***************************************************************************************************************
-  Funcion: Primos
-  Descripcion: Es la fucion que sera ejecutada por cada hilo,
-	verificara que cada numero del rango que le corresponde sea primo
+  Funcion: Validar entrada
+  Descripcion:se encargar de verificar que los datos que el usuario ingresa son correctos,
+  para no enviar valores que no son verdaderos al stockmarket
   Parametros de entrada:
-  -datos:	Nodo donde se encuentra almacenados los datos y el arrglos de primos del hilo
+  -comando: linea de caracteres donde se guarda la solicitud del usuario
 
-  Parametro que devuelve: No devuelve nada
+  Parametro que devuelve: un obtejo Orden la cual ya se encuentra verificada
   ***************************************************************************************************************
   */
 Orden *validarEntrada(char *comando)
@@ -388,16 +385,14 @@ Orden *validarEntrada(char *comando)
 }
 /*
   ***************************************************************************************************************
-  Funcion: Primos
-  Descripcion: Es la fucion que sera ejecutada por cada hilo,
-	verificara que cada numero del rango que le corresponde sea primo
+  Funcion: envairDatos
+  Descripcion: se encarga de enviar la estructura mensaje por el pipe
   Parametros de entrada:
-  -datos:	Nodo donde se encuentra almacenados los datos y el arrglos de primos del hilo
-
+  -orden: estrcutura con los datos necesarios para la orden
   Parametro que devuelve: No devuelve nada
   ***************************************************************************************************************
   */
-int enviarDatos(Orden *orden)
+void enviarDatos(Orden *orden)
 {
   Mensaje *mensaje;
 
@@ -428,17 +423,20 @@ int enviarDatos(Orden *orden)
   }
   close(fd);
   printf("Se ha enviado la orden al stock market \n");
-  return 1;
+  
 }
 /*
   ***************************************************************************************************************
-  Funcion: Primos
-  Descripcion: Es la fucion que sera ejecutada por cada hilo,
+  Funcion: Validar empresa
+  Descripcion: se enceargar de verificar si la empresa que quiere vender el usuario
+   realmene este guardada en el broker con una cantidad mayor de acciones que lasque quiere vender
 	verificara que cada numero del rango que le corresponde sea primo
   Parametros de entrada:
-  -datos:	Nodo donde se encuentra almacenados los datos y el arrglos de primos del hilo
+  - empresa: el nombre de la empresa
+  - accciones: el numero de acciones que se quieren vender
 
-  Parametro que devuelve: No devuelve nada
+  Parametro que devuelve: bandera si es 1 cumple con las condiciones, si es cero no cunple
+  con las condiciones
   ***************************************************************************************************************
   */
 int validarEmpresa(char *empresa, int acciones)
@@ -462,11 +460,10 @@ int validarEmpresa(char *empresa, int acciones)
 /*utlilzado cuando se escribe el comando monto*/
 /*
   ***************************************************************************************************************
-  Funcion: Primos
-  Descripcion: Es la fucion que sera ejecutada por cada hilo,
-	verificara que cada numero del rango que le corresponde sea primo
+  Funcion: estadoBroker
+  Descripcion: se encarga de imprimir el monto actual del broker
   Parametros de entrada:
-  -datos:	Nodo donde se encuentra almacenados los datos y el arrglos de primos del hilo
+   no necesita
 
   Parametro que devuelve: No devuelve nada
   ***************************************************************************************************************
@@ -477,11 +474,11 @@ void estadoBroker()
 }
 /*
   ***************************************************************************************************************
-  Funcion: Primos
+  Funcion: sig_handler
   Descripcion: Es la fucion que sera ejecutada por cada hilo,
 	verificara que cada numero del rango que le corresponde sea primo
   Parametros de entrada:
-  -datos:	Nodo donde se encuentra almacenados los datos y el arrglos de primos del hilo
+  -segnal:	sera la la señal para la respuesta asincrona
 
   Parametro que devuelve: No devuelve nada
   ***************************************************************************************************************
@@ -518,11 +515,10 @@ void sig_handler(int sengnal)
 }
 /*
   ***************************************************************************************************************
-  Funcion: Primos
-  Descripcion: Es la fucion que sera ejecutada por cada hilo,
-	verificara que cada numero del rango que le corresponde sea primo
+  Funcion: printRespuesta
+  Descripcion: se encargar de verificar que tipo de respuesta es y mostarla al usuario
   Parametros de entrada:
-  -datos:	Nodo donde se encuentra almacenados los datos y el arrglos de primos del hilo
+  -respuesta:	estructura donde vienen los datos que envia le stockmarket
 
   Parametro que devuelve: No devuelve nada
   ***************************************************************************************************************
