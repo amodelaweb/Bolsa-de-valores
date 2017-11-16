@@ -21,7 +21,7 @@ int main(int argc, char const *argv[])
   -brokers
   */
   if (argc != 2){
-    printf("\n Uso: ./%s Nombre_Pipe",argv[0]);
+    printf("\n Uso: %s Nombre_Pipe\n",argv[0]);
     exit(1);
   }
   int fd , n, creado;
@@ -66,7 +66,7 @@ void Procesar_Orden(Mensaje mensaje){
   }else{
     free(auxb);
   }
-  if((mensaje.orden)->tip = 'C'){
+  if((mensaje.orden)->tip == 'C'){
     //compra
     ocomp = mensaje.orden;
     if(isEmpty(ventas)){
@@ -99,7 +99,7 @@ void Procesar_Orden(Mensaje mensaje){
       }
     }
   }else{
-    if((mensaje.orden)->tip = 'V'){
+    if((mensaje.orden)->tip == 'V'){
       //venta
       ovent = mensaje.orden;
       if(isEmpty(compras)){
@@ -130,6 +130,16 @@ void Procesar_Orden(Mensaje mensaje){
         }
         if(band == 0){
           add_order(ventas,(const void *) ovent);
+        }
+      }
+    }else if((mensaje.orden)->tip == 'Q'){
+      home_t(compras);
+      last_t(ventas);
+      while(compras->window != NULL && band == 0){
+        if(strcmp(((Orden*)((compras->window)->value))->empresa , (mensaje.orden)->empresa) == 0){
+          band = 1 ; 
+        }else{
+          next_t(compras);
         }
       }
     }
