@@ -4,7 +4,7 @@ Archivo: Broker.c
 Realizado por Santiago Chaustre y Andres Contreras
 Proyecto Sistemas Operativos 2017-30
 Compilacion: gcc Broker.c Utils.c List.c -o broker
-Observaciones: para ejecutar correctamente este programa los datos se deben 
+Observaciones: para ejecutar correctamente este programa los datos se deben
 	introducir en el siguiente orden:
     - nombre del broker
     - nombre del pipe stockmarket
@@ -13,7 +13,7 @@ Observaciones: para ejecutar correctamente este programa los datos se deben
 Descripcion: Este archivo contiene la inplementacion de la parte de broker del proyecto,
     donde se encargar de validar las entradas enviar y recibir ordenes
 Temas principales: uso de pipes, señaes y llamadas al sistema
-Fecha ultima modificacion: 16/11/2017 
+Fecha ultima modificacion: 16/11/2017
 */
 //*****************************************************************
 
@@ -158,7 +158,7 @@ void *manejoUsuario()
     {
       enviarDatos(orden);
     }
-   
+
   }
 }
 /*
@@ -321,7 +321,7 @@ Orden *validarEntrada(char *comando)
           else{
             return Orden_t('V', empresa, atoi(acciones), atoi(precio), datos->nombre);
           }
-          
+
         }
       }
       else
@@ -329,7 +329,7 @@ Orden *validarEntrada(char *comando)
         printf("Venta invalida \n");
         return NULL;
       }
-       
+
     }
     printf("CCCCC2\n");
     if ((strcmp(tipo, "consulta") == 0))
@@ -344,7 +344,7 @@ Orden *validarEntrada(char *comando)
         return NULL;
       }
     }
-    
+
 
     printf("CCCCC3\n");
     if ((strcmp(tipo,"compra") == 0))
@@ -423,7 +423,7 @@ void enviarDatos(Orden *orden)
   }
   close(fd);
   printf("Se ha enviado la orden al stock market \n");
-  
+
 }
 /*
   ***************************************************************************************************************
@@ -535,7 +535,7 @@ void printRespuesta(Respuesta respu)
     printf("con un monto total de: %d \n", (respu.acciones) * (respu.monto));
     printf("por medio del broker: %s \n", (char *)respu.brokers);
     printf("===============================================\n");
-    manejoCom*pra(respu);
+    manejoCompra(respu);
   }
   if (respu.tipo == 'V')
   {
@@ -621,9 +621,9 @@ void manejoCompra(Respuesta respu)
   {
     printf("Se realizo correctamente la acutalizacion de datos\n");
   }
-*  else
+  else
   {
-    empresa = Empresa_t(respu.acciones,respu.nombre);
+    empresa = Empresa_t(respu.acciones,respu.brokers);
     add_empresa(datos, empresa);
     printf("Se agrego una nueva empresa a su lista de empresas\n");
   }

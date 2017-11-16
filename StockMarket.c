@@ -91,17 +91,17 @@ void Procesar_Orden(Mensaje mensaje){
           resta = ovent->cantidad - ocomp->cantidad;
           if (resta == 0){
             band = 1;
-            avisar(ovent , ocomp , 0);
+            avisar(ovent , ocomp , ovent->cantidad);
             del_t(ventas);
             last_t(ventas);
           }else if(resta > 0){
 
             band = 1 ;
             ovent->cantidad = resta ;
-            avisar(ovent , ocomp , 0);
+            avisar(ovent , ocomp , ocomp->cantidad-resta);
           }else{
             ocomp->cantidad = (resta)*-1;
-            avisar(ovent , ocomp , 0);
+            avisar(ovent , ocomp ,ovent->cantidad);
             del_t(ventas);
             last_t(ventas);
           }
@@ -128,16 +128,17 @@ void Procesar_Orden(Mensaje mensaje){
             resta = ocomp->cantidad - ovent->cantidad;
             if(resta == 0){
               band = 1 ;
-              avisar(ovent , ocomp , 1);
+              avisar(ovent , ocomp , ocomp->cantidad);
               del_t(compras);
               home_t(compras);
             }else if (resta > 0){
               band = 1 ;
-              ovent->cantidad = resta ;
-              avisar(ovent , ocomp , 1);
+              ocomp->cantidad = resta ;
+              avisar(ovent , ocomp , ovent->cantidad);
             }else{
+              printf("SOY IBECIL\n" );
               ovent->cantidad = (resta)*-1 ;
-              avisar(ovent , ocomp , 1);
+              avisar(ovent , ocomp , ocomp->cantidad);
               del_t(compras);
               home_t(compras);
             }
@@ -187,6 +188,7 @@ void Procesar_Orden(Mensaje mensaje){
       }
       if(ocomp == NULL){
         //NO EXISTE EMPRESA
+        avisar2(NULL,NULL,(mensaje.pipename));
       }else{
         band = 0 ;
         precio = ocomp->precio ;
@@ -267,7 +269,7 @@ void avisar(Orden* broker1 , Orden* broker2 , int d){
         printf("\n Eh abierto el pipe \n");
       }
     } while (creado == 0);
-    respuesta = Respuesta_t('C',broker1->cantidad, precio , broker1->empresa , broker2->broker);
+    respuesta = Respuesta_t(broker1->tip,d, precio , broker1->empresa , broker2->broker);
     if(write(fd, respuesta, sizeof(struct Resp)) == -1){
       perror(" Write ");
       exit(2);
@@ -278,7 +280,7 @@ void avisar(Orden* broker1 , Orden* broker2 , int d){
   if(broker2 != NULL){
 
     baux = (Broker*)(get_node(brokers,(const void *) Broker_t(broker2->broker,1111) ))->value;
-    respuesta = Respuesta_t('C',broker2->cantidad, precio , broker2->empresa , broker1->broker);
+    respuesta = Respuesta_t(broker2->tip,d, precio , broker2->empresa , broker1->broker);
 
     if ( kill (baux->pid, SIGUSR1) == -1){
       perror("Kill : ");
@@ -302,7 +304,6 @@ void avisar(Orden* broker1 , Orden* broker2 , int d){
         printf("\n Eh abierto el pipe \n");
       }
     } while (creado == 0);
-    respuesta = Respuesta_t('C',broker1->cantidad, precio , broker1->empresa , broker2->broker);
     if(write(fd2, respuesta, sizeof(struct Resp)) == -1){
       perror(" Write ");
       exit(2);
