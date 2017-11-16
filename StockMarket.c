@@ -3,6 +3,7 @@
 void ImprimimrOrdenes();
 void Procesar_Orden(Mensaje mensaje);
 void avisar(Orden* broker1 , Orden* broker2 , int d);
+void avisar2(Orden* compra , Orden* venta , char *broker);
 
 list_t* compras;
 list_t* ventas;
@@ -46,13 +47,14 @@ int main(int argc, char const *argv[])
         creado = 1;
       }
     } while (creado == 0);
-    printf("%s\n", "Pipe abierto");
+
     do{
       n = read(fd,&mensaje,sizeof(Mensaje));
     }while(n <= 0);
     close(fd);
     Procesar_Orden(mensaje);
-    print(ventas,0);
+    print(compras,0);
+    printf("%s\n","Orden Procesada !" );
   }
 }
 //========================================================================
@@ -61,7 +63,7 @@ void ImprimimrOrdenes(){
 }
 //========================================================================
 void Procesar_Orden(Mensaje mensaje){
-  int band =0,resta = 0 ;
+  int band =0,resta = 0 , precio = 0;
   Broker* auxb = Broker_t(mensaje.pipename,mensaje.pid) ;
   Orden* auxo,*ocomp,*ovent ;
   Respuesta* auxr ;
@@ -82,26 +84,34 @@ void Procesar_Orden(Mensaje mensaje){
     }else{
       last_t(ventas);
       while (ventas->window != NULL && band == 0) {
-        ovent = (Orden *)((compras->window)->value) ;
+        printf("MAYBE ES AQUI\n");
+        ovent = (Orden *)(ventas->window)->value;
+        printf(" NO LO SE RICK\n");
         if(ocomp->precio >= ovent->precio && strcmp(ocomp->empresa , ovent->empresa) == 0){
+          printf("PARECE FALSO :V \n");
           resta = ovent->cantidad - ocomp->cantidad;
           if (resta == 0){
+            printf("SINO SE ES LA C\n");
             band = 1;
             avisar(ovent , ocomp , 0);
             del_t(ventas);
           }else if(resta > 0){
+            printf("O LA D\n");
             band = 1 ;
             ovent->cantidad = resta ;
             avisar(ovent , ocomp , 0);
           }else{
+            printf("NO C BRO PARECE FALSO \n");
             ocomp->cantidad = (resta)*-1;
             avisar(ovent , ocomp , 0);
             del_t(ventas);
           }
         }else{
+          printf("ESTO ES MUY EXTRAÑO\n");
           back_t(ventas);
         }
       }
+      printf("SI LLEGASTE AQUI\n");
       if(band == 0){
         add_order(compras ,(const void *) ocomp);
       }
@@ -113,19 +123,12 @@ void Procesar_Orden(Mensaje mensaje){
       Orden* mend = Orden_t((mensaje.orden).tip , (mensaje.orden).empresa , (mensaje.orden).cantidad  , (mensaje.orden).precio , (mensaje.orden).broker);
       if(isEmpty(compras) == 1){
         add_order(ventas,(const void *) mend);
-        printf("%s\n","Se registro la Venta !." );
       }else{
-        printf("PUEDE SER EL HOME \n");
         home_t(compras);
-        printf("NO ES EL HOME \n");
         while (compras->window != NULL && band == 0) {
-          printf("VALIDAMOS ? \n");
           ocomp = (Orden *)(compras->window)->value;
-          printf("PUEDE SER LA PROXIMA COMPARAION ? \n");
           if(ovent->precio <= ocomp->precio && strcmp(ocomp->empresa , ovent->empresa) == 0){
-            printf("NO ES PERO PUEDE SER RESTA \n");
             resta = ocomp->cantidad - ovent->cantidad;
-            printf("BUENO AL PARECER NO \n");
             if(resta == 0){
               band = 1 ;
               avisar(ovent , ocomp , 1);
@@ -151,20 +154,85 @@ void Procesar_Orden(Mensaje mensaje){
     }else if((mensaje.orden).tip == 'Q'){
       home_t(compras);
       last_t(ventas);
+      ocomp = NULL ;
+      ovent = NULL ;
       while(compras->window != NULL && band == 0){
         if(strcmp(((Orden*)((compras->window)->value))->empresa , (mensaje.orden).empresa) == 0){
           band = 1 ;
+          ocomp = ((Orden*)((compras->window)->value)) ;
         }else{
           next_t(compras);
         }
       }
+      band = 0 ;
+      while(ventas->window != NULL && band == 0){
+        if(strcmp(((Orden*)((ventas->window)->value))->empresa , (mensaje.orden).empresa) == 0){
+          band = 1 ;
+          ovent = ((Orden*)((ventas->window)->value)) ;
+        }else{
+          back_t(ventas);
+        }
+      }
+
+      avisar2(ocomp,ovent,(mensaje.pipename));
+
+    }else if ((mensaje.orden).tip == 'T'){
+      home_t(compras);
+      ocomp = NULL ;
+      while(compras->window != NULL && band == 0){
+        if(strcmp(((Orden*)((compras->window)->value))->empresa , (mensaje.orden).empresa) == 0){
+          band = 1 ;
+          ocomp = ((Orden*)((compras->window)->value)) ;
+        }else{
+          next_t(compras);
+        }
+      }
+      if(ocomp == NULL){
+        //NO EXISTE EMPRESA
+      }else{
+        band = 0 ;
+        precio = ocomp->precio ;
+        (mensaje.orden).precio = precio ;
+        ovent = &mensaje.orden;
+        Orden* mend = Orden_t((mensaje.orden).tip , (mensaje.orden).empresa , (mensaje.orden).cantidad  , (mensaje.orden).precio , (mensaje.orden).broker);
+        if(isEmpty(compras) == 1){
+          add_order(ventas,(const void *) mend);
+        }else{
+          home_t(compras);
+          while (compras->window != NULL && band == 0) {
+            ocomp = (Orden *)(compras->window)->value;
+            if(ovent->precio <= ocomp->precio && strcmp(ocomp->empresa , ovent->empresa) == 0){
+              resta = ocomp->cantidad - ovent->cantidad;
+              if(resta == 0){
+                band = 1 ;
+                avisar(ovent , ocomp , 1);
+                del_t(compras);
+              }else if (resta > 0){
+                band = 1 ;
+                ovent->cantidad = resta ;
+                avisar(ovent , ocomp , 1);
+              }else{
+                ovent->cantidad = (resta)*-1 ;
+                avisar(ovent , ocomp , 1);
+                del_t(compras);
+                home_t(compras);
+              }
+            }else{
+              next_t(compras);
+            }
+          }
+          if(band == 0){
+            add_order(ventas,(const void *) ovent);
+          }
+        }
+
+      }
     }
   }
-
 }
 //========================================================================
 void avisar(Orden* broker1 , Orden* broker2 , int d){
-  int fd1,fd2,precio ;
+  /*int fd1,fd2,precio ;
   Broker* baux ;
   Respuesta *respuesta;
 
@@ -182,7 +250,7 @@ void avisar(Orden* broker1 , Orden* broker2 , int d){
       //sleep(5); //los unicos sleeps que deben colocar son los que van en los ciclos para abrir los pipes.
     }while(fd1 < 0 );
     baux = (Broker*)(get_node(brokers,(const void *) Broker_t(broker1->broker,1111) ))->value;
-    write(fd1, &respuesta, sizeof(struct Resp));
+    write(fd1, respuesta, sizeof(struct Resp));
     if ( kill (baux->pid, SIGUSR1) == -1){
       perror("Kill : ");
       exit(1);
@@ -197,12 +265,37 @@ void avisar(Orden* broker1 , Orden* broker2 , int d){
       //sleep(5); //los unicos sleeps que deben colocar son los que van en los ciclos para abrir los pipes.
     }while(fd2 < 0 );
     baux = (Broker*)(get_node(brokers,(const void *) Broker_t(broker2->broker,1111) ))->value;
-    write(fd2, &respuesta, sizeof(struct Resp));
+    write(fd2, respuesta, sizeof(struct Resp));
     if ( kill (baux->pid, SIGUSR1) == -1){
       perror("Kill : ");
       exit(1);
     }
   }
-
+*/
+}
+//========================================================================
+void avisar2(Orden* compra , Orden* venta , char *broker){
+  int pventa = -1 , pcompra = -1 ,fd2;
+  Respuesta* respuesta ;
+  Broker* baux ;
+  if(compra != NULL){
+    pcompra = compra->precio ;
+  }
+  if(venta != NULL){
+    pventa = venta->precio ;
+  }
+  do{
+    fd2 = open(broker, O_WRONLY|O_NONBLOCK);
+    perror(" Market abriendo pipe de respuesta : ");
+    printf(" Se volvera a intentar despues\n");
+    //sleep(5); //los unicos sleeps que deben colocar son los que van en los ciclos para abrir los pipes.
+  }while(fd2 < 0 );
+  baux = (Broker*)(get_node(brokers,(const void *) Broker_t(broker,1111) ))->value;
+  respuesta = Respuesta_t('Q', pcompra, pventa , compra->empresa , "");
+  write(fd2, respuesta, sizeof(struct Resp));
+  if ( kill (baux->pid, SIGUSR1) == -1){
+    perror("Kill : ");
+    exit(1);
+  }
 }
 //========================================================================
