@@ -141,13 +141,14 @@ void avisar(Orden* broker1 , Orden* broker2 , int d){
   int fd1,fd2,precio ;
   Broker* baux ;
   Respuesta *respuesta;
-  
+
   if (d == 1){
     precio = broker1->precio;
   }else{
     precio = broker2->precio;
   }
   if(broker1 != NULL){
+    respuesta = Respuesta_t('C',broker1->cantidad, precio , broker1->empresa , broker2->broker);
     do{
       fd1 = open(broker1->broker, O_WRONLY|O_NONBLOCK);
       perror(" Market abriendo pipe de respuesta : ");
@@ -162,6 +163,7 @@ void avisar(Orden* broker1 , Orden* broker2 , int d){
     }
   }
   if(broker2 != NULL){
+    respuesta = Respuesta_t('C',broker2->cantidad, precio , broker2->empresa , broker1->broker);
     do{
       fd2 = open(broker2->broker, O_WRONLY|O_NONBLOCK);
       perror(" Market abriendo pipe de respuesta : ");
