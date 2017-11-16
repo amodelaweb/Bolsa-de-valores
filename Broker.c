@@ -20,24 +20,17 @@ int validarEmpresa(char *empresa, int acciones);
 void manejoCompra(Respuesta respu);
 void manejoVenta(Respuesta respu);
 void manejoConsulta(Respuesta respu);
-int maxAcciones(char* empresa);
-<<<<<<< HEAD
-
-    Datos *datos;
-    int fd1 ;
-    
-=======
+int maxAcciones(char *empresa);
 Datos *datos;
-int fd1,fd ;
+int fd1, fd;
 
->>>>>>> 40f76053a9a21fa356713bd6bc70b61bec2adc94
 int main(int argc, char const *argv[])
 {
-  signal(SIGUSR1,sig_handler);
+  signal(SIGUSR1, sig_handler);
   mode_t fifo_mode = S_IRUSR | S_IWUSR;
   char *comando;
   pthread_t thread1, thread2;
-  int continuar,creado;
+  int continuar, creado;
   int i;
   /*fin de variables*/
 
@@ -48,11 +41,10 @@ int main(int argc, char const *argv[])
     exit(1);
   }
 
-
-  datos = Datos_t(atoi(argv[4]), (char*)(argv[1]), (char*)argv[2]);
-  leerDatos((char*)argv[3]);
+  datos = Datos_t(atoi(argv[4]), (char *)(argv[1]), (char *)argv[2]);
+  leerDatos((char *)argv[3]);
   printf("Datos del broker cargados \n");
-  for(i=0;i<datos->tam;i++)
+  for (i = 0; i < datos->tam; i++)
   {
     printf("NOOMBRE: %s \n", (datos->empresas)[i].nombre);
     printf("ACCIONES: %d \n", (datos->empresas)[i].acciones);
@@ -97,9 +89,9 @@ exit(2);
 }
 
 */
-//respuestaAsin();
-manejoUsuario();
-exit(0);
+  //respuestaAsin();
+  manejoUsuario();
+  exit(0);
 }
 void *respuestaAsin(void *datos)
 {
@@ -114,10 +106,10 @@ void *respuestaAsin(void *datos)
 
 void *manejoUsuario()
 {
-  signal(SIGUSR1,sig_handler);
+  signal(SIGUSR1, sig_handler);
   int continuar;
   Orden *orden;
-  char *comando = (char*)malloc(sizeof(char) * TAMNOMBRE);
+  char *comando = (char *)malloc(sizeof(char) * TAMNOMBRE);
   continuar = 1;
   //fd1 = open(datos->pipename , O_RDONLY | O_NONBLOCK);
   //if(fd1 <= 0){
@@ -125,7 +117,7 @@ void *manejoUsuario()
   //}else{
   //  printf("\n Me abri con %d ",fd1);
   //}
-  printf("%s\n","Ingrese un comando" );
+  printf("%s\n", "Ingrese un comando");
   while (continuar)
   {
     printf("~$ ");
@@ -136,10 +128,8 @@ void *manejoUsuario()
     if (orden != NULL)
     {
       enviarDatos(orden);
-    }else{
-      printf("\t Datos invalidos !\n");
     }
-
+   
   }
 }
 void leerDatos(char *arch)
@@ -150,11 +140,11 @@ void leerDatos(char *arch)
   char *nomEmpr;
   Empresa *empresa;
   char *token;
-  char* s1 = " ";
+  char *s1 = " ";
   int acciones;
 
-  nomEmpr = (char*)malloc(sizeof(char) * maxchar);
-  linea = (char*)malloc( sizeof(char ) * maxchar);
+  nomEmpr = (char *)malloc(sizeof(char) * maxchar);
+  linea = (char *)malloc(sizeof(char) * maxchar);
 
   archivo = fopen(arch, "r");
   /*revisar perror*/
@@ -172,7 +162,7 @@ void leerDatos(char *arch)
       printf("LINEA: %s \n", linea);
       /* get the first token */
       token = strtok(linea, s1);
-      printf("Token1: %s \n",token);
+      printf("Token1: %s \n", token);
       /* walk through other tokens */
       strcpy(nomEmpr, token);
       token = strtok(NULL, s1);
@@ -180,8 +170,7 @@ void leerDatos(char *arch)
       acciones = atoi(token);
 
       empresa = Empresa_t(acciones, nomEmpr);
-      add_empresa(datos,empresa);
-
+      add_empresa(datos, empresa);
     }
   }
 
@@ -196,7 +185,7 @@ Orden *validarEntrada(char *comando)
   -   acciones
   -   precio
   */
-  char* s = ":";
+  char *s = ":";
   char *tipo;
   char *empresa;
   char *acciones;
@@ -212,7 +201,8 @@ Orden *validarEntrada(char *comando)
     tipo = malloc(sizeof(char) * TAMNOMBRE);
     strcpy(tipo, token);
   }
-  else{
+  else
+  {
     tipo = NULL;
   }
   token = strtok(NULL, s);
@@ -231,7 +221,8 @@ Orden *validarEntrada(char *comando)
     acciones = malloc(sizeof(char) * TAMNOMBRE);
     strcpy(acciones, token);
   }
-  else{
+  else
+  {
     acciones = NULL;
   }
 
@@ -241,7 +232,8 @@ Orden *validarEntrada(char *comando)
     precio = malloc(sizeof(char) * 30);
     strcpy(precio, token);
   }
-  else{
+  else
+  {
     precio = NULL;
   }
   /*validacion de datos
@@ -251,54 +243,84 @@ Orden *validarEntrada(char *comando)
   si el tipo es monto se muestras de una ves
   para las demas validaciones lo hace el stockmarket*/
   if ((strcmp(tipo, "venta") == 0) || (strcmp(tipo, "compra") == 0) ||
-  (strcmp(tipo, "consulta") == 0) || (strcmp(tipo, "monto") == 0))
+      (strcmp(tipo, "consulta") == 0) || (strcmp(tipo, "monto") == 0))
   {
     if (strcmp(tipo, "monto") == 0)
     {
       estadoBroker();
       return NULL;
     }
-
+    printf("CCCCC1\n");
     if (strcmp(tipo, "venta") == 0)
     {
       // existen dos tipos
-
-
-      if (acciones == NULL && precio == NULL)
+      if (empresa != NULL)
       {
-
-        return Orden_t('T', empresa, maxAcciones(empresa), -1, datos->nombre);
-      }
-      else
-      {
-        if (validarEmpresa(empresa, atoi(acciones)) == 0)
+        if (acciones == NULL && precio == NULL)
         {
-          printf("Error: no se puede realizar la venta\n");
-          printf("no existe el nombre de la empresa o el no se tienen la cantida de acciones a vender\n");
-          return NULL;
+
+          return Orden_t('T', empresa, maxAcciones(empresa), -1, datos->nombre);
         }
-        return Orden_t('V', empresa, atoi(acciones), atoi(precio), datos->nombre);
-      }
-    }
-
-    if (strcmp(tipo, "consulta") == 0 && empresa != NULL)
-    {
-      return Orden_t('Q', empresa, -1, -1 , datos->nombre);
-    }
-
-    if (strcmp(tipo, "compra") == 0)
-    {
-      printf("MONTO %d MULTI %d\n",datos->monto,(atoi(acciones)*atoi(precio)) );
-      if((atoi(acciones)*atoi(precio)) <= datos->monto)
-      {
-        return Orden_t('C', empresa, atoi(acciones), atoi(precio), datos->nombre);
+        else
+        {
+          if (validarEmpresa(empresa, atoi(acciones)) == 0)
+          {
+            printf("Error: no se puede realizar la venta\n");
+            printf("no existe el nombre de la empresa o el no se tienen la cantida de acciones a vender\n");
+            return NULL;
+          }
+          else{
+            return Orden_t('V', empresa, atoi(acciones), atoi(precio), datos->nombre);
+          }
+          
+        }
       }
       else
       {
-        printf("No dispone de dinero suficiente para realizar la transaccion\n");
+        printf("Venta invalida \n");
         return NULL;
       }
+       
+    }
+    printf("CCCCC2\n");
+    if ((strcmp(tipo, "consulta") == 0))
+    {
+      if ((empresa != NULL))
+      {
+        return Orden_t('Q', empresa, -1, -1, datos->nombre);
+      }
+      else
+      {
+        printf("Consulta invalida\n");
+        return NULL;
+      }
+    }
+    
 
+    printf("CCCCC3\n");
+    if ((strcmp(tipo,"compra") == 0))
+    {
+      if(empresa != NULL && acciones != NULL && precio != NULL)
+      {
+        printf("MONTO %d MULTI %d\n", datos->monto, (atoi(acciones) * atoi(precio)));
+        if ((atoi(acciones) * atoi(precio)) <= datos->monto)
+        {
+          return Orden_t('C', empresa, atoi(acciones), atoi(precio), datos->nombre);
+        }
+        else
+        {
+          printf("No dispone de dinero suficiente para realizar la transaccion\n");
+          return NULL;
+        }
+      }
+      else
+      {
+        printf("Compra invalida\n");
+      }
+    }
+    else
+    {
+      printf("Compra invalida\n");
     }
   }
   else
@@ -311,21 +333,20 @@ Orden *validarEntrada(char *comando)
     printf("    *) monto\n");
     return NULL;
   }
-
 }
 int enviarDatos(Orden *orden)
 {
   Mensaje *mensaje;
 
-  mensaje = Mensaje_t(orden,datos->pid,datos->nombre);
-  int creado,n;
+  mensaje = Mensaje_t(orden, datos->pid, datos->nombre);
+  int creado, n;
   creado = 0;
 
   do
   {
-    fd = open(datos->pipename, O_WRONLY|O_NONBLOCK );
+    fd = open(datos->pipename, O_WRONLY | O_NONBLOCK);
 
-    if ( fd == -1)
+    if (fd == -1)
     {
       perror(" Cliente  Abriendo el segundo pipe. Se volvera a intentar ");
       sleep(5);
@@ -337,29 +358,30 @@ int enviarDatos(Orden *orden)
     }
   } while (creado == 0);
 
-  if(write(fd,mensaje, sizeof(Mensaje)) == -1){
+  if (write(fd, mensaje, sizeof(Mensaje)) == -1)
+  {
     perror(" Write ");
     exit(2);
   }
   close(fd);
   printf("Se ha enviado la orden al stock market \n");
-  return 1 ;
+  return 1;
 }
 
 int validarEmpresa(char *empresa, int acciones)
 {
-  int i, band = 0 ;
-  int tam = datos->tam ;
-  for(i=0; i< tam && band == 0; i++)
+  int i, band = 0;
+  int tam = datos->tam;
+  for (i = 0; i < tam && band == 0; i++)
   {
 
-    if(strcmp(((datos->empresas)[i]).nombre,empresa) == 0)
+    if (strcmp(((datos->empresas)[i]).nombre, empresa) == 0)
     {
-      if(((datos->empresas)[i]).acciones >= acciones){
-        band = 1 ;
+      if (((datos->empresas)[i]).acciones >= acciones)
+      {
+        band = 1;
       }
     }
-
   }
 
   return band;
@@ -372,50 +394,52 @@ void estadoBroker()
 
 void sig_handler(int sengnal)
 {
-  printf("%s\n","Entre en el handler " );
-  int creado,n;
+  printf("%s\n", "Entre en el handler ");
+  int creado, n;
   Respuesta respuesta;
 
-  creado = 0 ;
-  do {
-    fd1 = open (datos->nombre, O_RDONLY );
-    if (fd1 == -1) {
+  creado = 0;
+  do
+  {
+    fd1 = open(datos->nombre, O_RDONLY);
+    if (fd1 == -1)
+    {
       perror("pipe");
       printf(" Se volvera a intentar despues\n");
       //sleep(5);
-    } else{
+    }
+    else
+    {
       creado = 1;
     }
   } while (creado == 0);
 
-  do{
-    n = read(fd1,&respuesta,sizeof(Respuesta));
-  }while(n <= 0);
+  do
+  {
+    n = read(fd1, &respuesta, sizeof(Respuesta));
+  } while (n <= 0);
   printf("---> %c\n", respuesta.tipo);
   close(fd1);
-  //printRespuesta(*respuesta);
-
+  printRespuesta(respuesta);
 }
-
-
 
 void printRespuesta(Respuesta respu)
 {
 
-  if(respu.tipo =='C')
+  if (respu.tipo == 'C')
   {
     printf("===============================================\n");
     printf("Se ha realizado la compra exitosa de: \n");
-    printf("Acciones de la empresa: %s \n", (char*)respu.empresa);
-    printf("acciones compradas: %d \n",respu.acciones);
-    printf("con un monto total de: %d \n",(respu.acciones * respu.monto));
-    printf("por medio del broker: %s \n",(char*)respu.brokers);
+    printf("Acciones de la empresa: %s \n", (char *)respu.empresa);
+    printf("acciones compradas: %d \n", respu.acciones);
+    printf("con un monto total de: %d \n", (respu.acciones) * (respu.monto));
+    printf("por medio del broker: %s \n", (char *)respu.brokers);
     printf("===============================================\n");
     manejoCompra(respu);
   }
   if (respu.tipo == 'V')
   {
-    if(respu.acciones == -1)
+    if (respu.acciones == -1)
     {
       printf("no se pudo realizar la venta: no se econtro el precio mas alto en compras para dicha empresa \n");
     }
@@ -423,10 +447,10 @@ void printRespuesta(Respuesta respu)
     {
       printf("===============================================\n");
       printf("se ha  realizado la venta exitosa de: \n");
-      printf("acciones de la empresa: %s \n", (char*)respu.empresa);
-      printf("acciones vendidas: %d \n",respu.acciones);
-      printf("con un monto total de: %d \n",(respu.acciones * respu.monto));
-      printf("por medio del broker: %s \n", (char*)respu.brokers);
+      printf("acciones de la empresa: %s \n", (char *)respu.empresa);
+      printf("acciones vendidas: %d \n", respu.acciones);
+      printf("con un monto total de: %d \n", (respu.acciones * respu.monto));
+      printf("por medio del broker: %s \n", (char *)respu.brokers);
       printf("===============================================\n");
       manejoVenta(respu);
     }
@@ -440,18 +464,18 @@ void printRespuesta(Respuesta respu)
 void manejoVenta(Respuesta respu)
 {
   int i;
-  int ban ;
+  int ban;
   ban = 0;
   datos->monto += respu.monto;
-  for(i=0;i<datos->tam && ban == 0;i++)
+  for (i = 0; i < datos->tam && ban == 0; i++)
   {
-    if(strcmp((datos->empresas)[i].nombre, respu.empresa)==0)
+    if (strcmp((datos->empresas)[i].nombre, respu.empresa) == 0)
     {
       (datos->empresas)[i].acciones -= respu.acciones;
       ban = 1;
     }
   }
-  if(ban == 1)
+  if (ban == 1)
   {
     printf("se realizo correctamente la acutalizacion de datos\n");
   }
@@ -485,27 +509,26 @@ void manejoCompra(Respuesta respu)
 }
 void manejoConsulta(Respuesta respu)
 {
-  if(respu.acciones == -1)
+  if (respu.acciones == -1)
   {
     printf("No existe la empresa actualmente en le sistema \n");
   }
   else
   {
     printf("====================================================\n");
-    printf("El precio de acciones de la empresa %s es:\n",respu.empresa);
+    printf("El precio de acciones de la empresa %s es:\n", respu.empresa);
     printf("Precio venta:  %d", respu.acciones);
     printf("Precio compra: %d", respu.monto);
     printf("====================================================\n");
   }
-
 }
 
-int maxAcciones(char* empresa)
+int maxAcciones(char *empresa)
 {
   int i;
-  for(i = 0;i<datos->tam; i++)
+  for (i = 0; i < datos->tam; i++)
   {
-    if(strcmp((datos->empresas)[i].nombre,empresa)== 0)
+    if (strcmp((datos->empresas)[i].nombre, empresa) == 0)
     {
       return (datos->empresas)[i].acciones;
     }
