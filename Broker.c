@@ -20,6 +20,7 @@ int validarEmpresa(char *empresa, int acciones);
 void manejoCompra(Respuesta respu);
 void manejoVenta(Respuesta respu);
 void manejoConsulta(Respuesta respu);
+int maxAcciones(char* empresa);
     Datos *datos;
 
 int main(int argc, char const *argv[])
@@ -88,7 +89,7 @@ int main(int argc, char const *argv[])
 }
 void *respuestaAsin(void *datos)
 {
-  //printf("%s\n","llegue aqui :D" );
+  
 }
 
 void *manejoUsuario(void *Datos)
@@ -235,20 +236,21 @@ Orden *validarEntrada(char *comando)
     {
       // existen dos tipos
 
-      if (validarEmpresa(empresa,atoi(acciones)) == 0)
-      {
-        printf("Error: no se puede realizar la venta\n");
-        printf("no existe el nombre de la empresa o el no se tienen la cantida de acciones a vender\n");
-        return NULL;
-      }
-
+      
       if (acciones == NULL && precio == NULL)
       {
-        return Orden_t('T', empresa, atoi(acciones), -1,datos->nombre);
+
+          return Orden_t('T', empresa, MaxAcciones(empresa), -1, datos->nombre);
       }
       else
       {
-        return Orden_t('V', empresa, atoi(acciones), atoi(precio) , datos->nombre);
+          if (validarEmpresa(empresa, atoi(acciones)) == 0)
+          {
+              printf("Error: no se puede realizar la venta\n");
+              printf("no existe el nombre de la empresa o el no se tienen la cantida de acciones a vender\n");
+              return NULL;
+          }
+          return Orden_t('V', empresa, atoi(acciones), atoi(precio), datos->nombre);
       }
     }
 
@@ -384,6 +386,12 @@ void printRespuesta(Respuesta &respu)
   }
   if (respu.tipo == 'V')
   {
+    if(respu.acciones == -1)
+    {
+        printf("no se pudo realizar la venta: no se econtro el precio mas alto en compras para dicha empresa \n");
+    }
+    else
+    {
     printf("===============================================\n");
     printf("se ha  realizado la venta exitosa de: \n");
     printf("acciones de la empresa: %s \n", (char*)respu.empresa);
@@ -392,6 +400,7 @@ void printRespuesta(Respuesta &respu)
     printf("por medio del broker: %s \n", (char*)respu.brokers);
     printf("===============================================\n");
     manejoVenta(respu);
+    }
   }
   if (respu.tipo == 'Q')
   {
@@ -460,5 +469,17 @@ void manejoConsulta(Respuesta respu)
         printf("====================================================\n");
     }
     
+}
+
+int maxAcciones(char* empresa)
+{
+    int i;
+    for(i = 0;i<datos->tam; i++)
+    {
+        if(strcmp((datos->empresa)[i].nombre,empresa)== 0)
+        {
+            return (datos->empresa)[i].acciones;
+        }
+    }
 }
 
