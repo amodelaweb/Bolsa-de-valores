@@ -21,8 +21,10 @@ void manejoCompra(Respuesta respu);
 void manejoVenta(Respuesta respu);
 void manejoConsulta(Respuesta respu);
 int maxAcciones(char* empresa);
+
     Datos *datos;
     int fd1 ;
+    
 int main(int argc, char const *argv[])
 {
   mode_t fifo_mode = S_IRUSR | S_IWUSR;
