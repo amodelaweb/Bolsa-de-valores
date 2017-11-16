@@ -75,7 +75,7 @@ void Procesar_Orden(Mensaje mensaje){
       last_t(ventas);
       while (ventas->window != NULL && band == 0) {
         ovent = (Orden *)((compras->window)->value) ;
-        if(ocomp->precio >= ovent->precio ){
+        if(ocomp->precio >= ovent->precio && strcmp(ocomp->empresa , ovent->empresa) == 0){
           resta = ovent->cantidad - ocomp->cantidad;
           if (resta == 0){
             band = 1;
@@ -108,7 +108,7 @@ void Procesar_Orden(Mensaje mensaje){
         home_t(compras);
         while (compras->window != NULL && band == 0) {
           ocomp = (Orden *)(compras->window)->value;
-          if(ovent->precio <= ocomp->precio ){
+          if(ovent->precio <= ocomp->precio && strcmp(ocomp->empresa , ovent->empresa) == 0){
             resta = ocomp->cantidad - ovent->cantidad;
             if(resta == 0){
               band = 1 ;
@@ -156,7 +156,7 @@ void avisar(Orden* broker1 , Orden* broker2 , int d){
       //sleep(5); //los unicos sleeps que deben colocar son los que van en los ciclos para abrir los pipes.
     }while(fd1 < 0 );
     baux = (Broker*)(get_node(brokers,(const void *) Broker_t(broker1->broker,1111) ))->value;
-    //write(fd1, &r, sizeof(struct Resp));
+    write(fd1, &respuesta, sizeof(struct Resp));
     if ( kill (baux->pid, SIGUSR1) == -1){
       perror("Kill : ");
       exit(1);
@@ -171,7 +171,7 @@ void avisar(Orden* broker1 , Orden* broker2 , int d){
       //sleep(5); //los unicos sleeps que deben colocar son los que van en los ciclos para abrir los pipes.
     }while(fd2 < 0 );
     baux = (Broker*)(get_node(brokers,(const void *) Broker_t(broker2->broker,1111) ))->value;
-    //write(fd2, &r, sizeof(struct Resp));
+    write(fd2, &respuesta, sizeof(struct Resp));
     if ( kill (baux->pid, SIGUSR1) == -1){
       perror("Kill : ");
       exit(1);
