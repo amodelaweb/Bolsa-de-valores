@@ -72,6 +72,7 @@ void add_empresa(Datos* broker,Empresa* empresa){
 int comparator_orden(const void *a1 , const void *b1){
   Orden **a = (Orden**)a1;
   Orden **b = (Orden**)b1;
+  printf("EMPRESA : %s \n", (*a)->empresa);
   if((*a)->precio > (*b)->precio){
     return -1 ;
   }else{
@@ -105,7 +106,8 @@ void printb_t(const void *elemento){
 //===============================================================================
 void print_t(const void *elemento){
   Orden **b = (Orden**)elemento;
-  printf("E:~ %s ~P:~ %d ~C:~ %d ~T:~ %c ~B:~ %s~\n",(*b)->empresa , (*b)->precio , (*b)->cantidad , (*b)->tip , (*b)->broker);
+  //printf("Empresa   Precio   Cantidad   Tipo  Broker\n" );
+  printf("  %s        %d        %d        %c    %s \n",(*b)->empresa , (*b)->precio , (*b)->cantidad , (*b)->tip , (*b)->broker);
 }
 //===============================================================================
 void to_lowercase(char* str){

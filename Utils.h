@@ -35,4 +35,5 @@ void print_t(const void *elemento);
 void printb_t(const void *elemento);
 void to_lowercase(char* str);
 void add_empresa(Datos* broker,Empresa* empresa);
+
 #endif // !__UTILS_H
