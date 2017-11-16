@@ -1,6 +1,27 @@
+//*****************************************************************
+/*
+Archivo: Broker.c
+Realizado por Santiago Chaustre y Andres Contreras
+Proyecto Sistemas Operativos 2017-30
+Compilacion: gcc Broker.c Utils.c List.c -o broker
+Observaciones: para ejecutar correctamente este programa los datos se deben 
+	introducir en el siguiente orden:
+    - nombre del broker
+    - nombre del pipe stockmarket
+    - archivo de recursos
+    - monto
+Descripcion: Este archivo contiene la inplementacion de la parte de broker del proyecto,
+    donde se encargar de validar las entradas enviar y recibir ordenes
+Temas principales: uso de pipes, señaes y llamadas al sistema
+Fecha ultima modificacion: 16/11/2017 
+*/
+//*****************************************************************
 
 #include "Utils.h"
 
+//*****************************************************************
+//DECLARACIÓN DE FUNCIONES
+//*****************************************************************
 /*hilos*/
 /*se encarga de recibir las respuestas asincronas*/
 void *respuestaAsin(void *datos);
@@ -103,7 +124,17 @@ void *respuestaAsin(void *datos)
 }
 */
 }
+/*
+  ***************************************************************************************************************
+  Funcion: Primos
+  Descripcion: Es la fucion que sera ejecutada por cada hilo,
+	verificara que cada numero del rango que le corresponde sea primo
+  Parametros de entrada:
+  -datos:	Nodo donde se encuentra almacenados los datos y el arrglos de primos del hilo
 
+  Parametro que devuelve: No devuelve nada
+  ***************************************************************************************************************
+  */
 void *manejoUsuario()
 {
   signal(SIGUSR1, sig_handler);
@@ -132,6 +163,17 @@ void *manejoUsuario()
    
   }
 }
+/*
+  ***************************************************************************************************************
+  Funcion: Primos
+  Descripcion: Es la fucion que sera ejecutada por cada hilo,
+	verificara que cada numero del rango que le corresponde sea primo
+  Parametros de entrada:
+  -datos:	Nodo donde se encuentra almacenados los datos y el arrglos de primos del hilo
+
+  Parametro que devuelve: No devuelve nada
+  ***************************************************************************************************************
+  */
 void leerDatos(char *arch)
 {
   // archivo
@@ -176,7 +218,17 @@ void leerDatos(char *arch)
 
   fclose(archivo);
 }
+/*
+  ***************************************************************************************************************
+  Funcion: Primos
+  Descripcion: Es la fucion que sera ejecutada por cada hilo,
+	verificara que cada numero del rango que le corresponde sea primo
+  Parametros de entrada:
+  -datos:	Nodo donde se encuentra almacenados los datos y el arrglos de primos del hilo
 
+  Parametro que devuelve: No devuelve nada
+  ***************************************************************************************************************
+  */
 Orden *validarEntrada(char *comando)
 {
   /*oden de llegada de datos
@@ -334,6 +386,17 @@ Orden *validarEntrada(char *comando)
     return NULL;
   }
 }
+/*
+  ***************************************************************************************************************
+  Funcion: Primos
+  Descripcion: Es la fucion que sera ejecutada por cada hilo,
+	verificara que cada numero del rango que le corresponde sea primo
+  Parametros de entrada:
+  -datos:	Nodo donde se encuentra almacenados los datos y el arrglos de primos del hilo
+
+  Parametro que devuelve: No devuelve nada
+  ***************************************************************************************************************
+  */
 int enviarDatos(Orden *orden)
 {
   Mensaje *mensaje;
@@ -348,7 +411,7 @@ int enviarDatos(Orden *orden)
 
     if (fd == -1)
     {
-      perror(" Cliente  Abriendo el segundo pipe. Se volvera a intentar ");
+      perror(" Cliente  Abr*iendo el segundo pipe. Se volvera a intentar ");
       sleep(5);
     }
     else
@@ -367,7 +430,17 @@ int enviarDatos(Orden *orden)
   printf("Se ha enviado la orden al stock market \n");
   return 1;
 }
+/*
+  ***************************************************************************************************************
+  Funcion: Primos
+  Descripcion: Es la fucion que sera ejecutada por cada hilo,
+	verificara que cada numero del rango que le corresponde sea primo
+  Parametros de entrada:
+  -datos:	Nodo donde se encuentra almacenados los datos y el arrglos de primos del hilo
 
+  Parametro que devuelve: No devuelve nada
+  ***************************************************************************************************************
+  */
 int validarEmpresa(char *empresa, int acciones)
 {
   int i, band = 0;
@@ -387,11 +460,32 @@ int validarEmpresa(char *empresa, int acciones)
   return band;
 }
 /*utlilzado cuando se escribe el comando monto*/
+/*
+  ***************************************************************************************************************
+  Funcion: Primos
+  Descripcion: Es la fucion que sera ejecutada por cada hilo,
+	verificara que cada numero del rango que le corresponde sea primo
+  Parametros de entrada:
+  -datos:	Nodo donde se encuentra almacenados los datos y el arrglos de primos del hilo
+
+  Parametro que devuelve: No devuelve nada
+  ***************************************************************************************************************
+  */
 void estadoBroker()
 {
   printf("Su monto actual es: %d", datos->monto);
 }
+/*
+  ***************************************************************************************************************
+  Funcion: Primos
+  Descripcion: Es la fucion que sera ejecutada por cada hilo,
+	verificara que cada numero del rango que le corresponde sea primo
+  Parametros de entrada:
+  -datos:	Nodo donde se encuentra almacenados los datos y el arrglos de primos del hilo
 
+  Parametro que devuelve: No devuelve nada
+  ***************************************************************************************************************
+  */
 void sig_handler(int sengnal)
 {
   printf("%s\n", "Entre en el handler ");
@@ -422,7 +516,17 @@ void sig_handler(int sengnal)
   close(fd1);
   printRespuesta(respuesta);
 }
+/*
+  ***************************************************************************************************************
+  Funcion: Primos
+  Descripcion: Es la fucion que sera ejecutada por cada hilo,
+	verificara que cada numero del rango que le corresponde sea primo
+  Parametros de entrada:
+  -datos:	Nodo donde se encuentra almacenados los datos y el arrglos de primos del hilo
 
+  Parametro que devuelve: No devuelve nada
+  ***************************************************************************************************************
+  */
 void printRespuesta(Respuesta respu)
 {
 
@@ -435,7 +539,7 @@ void printRespuesta(Respuesta respu)
     printf("con un monto total de: %d \n", (respu.acciones) * (respu.monto));
     printf("por medio del broker: %s \n", (char *)respu.brokers);
     printf("===============================================\n");
-    manejoCompra(respu);
+    manejoCom*pra(respu);
   }
   if (respu.tipo == 'V')
   {
@@ -461,6 +565,17 @@ void printRespuesta(Respuesta respu)
   }
 }
 
+/*
+  ***************************************************************************************************************
+  Funcion: Primos
+  Descripcion: Es la fucion que sera ejecutada por cada hilo,
+	verificara que cada numero del rango que le corresponde sea primo
+  Parametros de entrada:
+  -datos:	Nodo donde se encuentra almacenados los datos y el arrglos de primos del hilo
+
+  Parametro que devuelve: No devuelve nada
+  ***************************************************************************************************************
+  */
 void manejoVenta(Respuesta respu)
 {
   int i;
@@ -480,11 +595,22 @@ void manejoVenta(Respuesta respu)
     printf("se realizo correctamente la acutalizacion de datos\n");
   }
 }
+/*
+  ***************************************************************************************************************
+  Funcion: Primos
+  Descripcion: Es la fucion que sera ejecutada por cada hilo,
+	verificara que cada numero del rango que le corresponde sea primo
+  Parametros de entrada:
+  -datos:	Nodo donde se encuentra almacenados los datos y el arrglos de primos del hilo
+
+  Parametro que devuelve: No devuelve nada
+  ***************************************************************************************************************
+  */
 void manejoCompra(Respuesta respu)
 {
   int i;
   int ban;
-  Empresa empresa;
+  Empresa *empresa;
   ban = 0;
   datos->monto -= respu.monto;
   for (i = 0; i < datos->tam && ban == 0; i++)
@@ -499,14 +625,24 @@ void manejoCompra(Respuesta respu)
   {
     printf("Se realizo correctamente la acutalizacion de datos\n");
   }
-  else
+*  else
   {
-    empresa.nombre = respu.empresa;
-    empresa.acciones = respu.acciones;
-    add_empresa(datos, &empresa);
+    empresa = Empresa_t(respu.acciones,respu.nombre);
+    add_empresa(datos, empresa);
     printf("Se agrego una nueva empresa a su lista de empresas\n");
   }
 }
+/*
+  ***************************************************************************************************************
+  Funcion: Primos
+  Descripcion: Es la fucion que sera ejecutada por cada hilo,
+	verificara que cada numero del rango que le corresponde sea primo
+  Parametros de entrada:
+  -datos:	Nodo donde se encuentra almacenados los datos y el arrglos de primos del hilo
+
+  Parametro que devuelve: No devuelve nada
+  ***************************************************************************************************************
+  */
 void manejoConsulta(Respuesta respu)
 {
   if (respu.acciones == -1)
@@ -523,6 +659,17 @@ void manejoConsulta(Respuesta respu)
   }
 }
 
+/*
+  ***************************************************************************************************************
+  Funcion: Primos
+  Descripcion: Es la fucion que sera ejecutada por cada hilo,
+	verificara que cada numero del rango que le corresponde sea primo
+  Parametros de entrada:
+  -datos:	Nodo donde se encuentra almacenados los datos y el arrglos de primos del hilo
+
+  Parametro que devuelve: No devuelve nada
+  ***************************************************************************************************************
+  */
 int maxAcciones(char *empresa)
 {
   int i;
