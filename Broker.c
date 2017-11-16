@@ -7,13 +7,13 @@ void *respuestaAsin(void *datos);
 /*se encargar de recibir los comandos del usuario*/
 void *manejoUsuario(void *datos);
 /*se encarga de leer los datos del archivo*/
-list_t *leerDatos(char *arch);
+list_t *leerDatos(Orden *orden);
 /*se encarga que los datos esten correctos para despues enviarlos
 si son correctos retorna 1*/
 Orden *validarEntrada(char *arch);
 /*envia los datos al stockMarket*/
 int enviarDatos(char *arch);
-char *recibirDatos();
+void printRespuesta(Respuesta respu);
 void sig_handler(int sengnal);
 
 Datos *datos;
@@ -33,12 +33,12 @@ int main(int argc, char const *argv[])
         printf("Uso: ./%s pipename recursos_iniciales monto \n", argv[0]);
         exit(1);
     }
-    datos = Datos_t(atoi(argv[4]), argv[1], argv[2]);
-    datos->empresas = leerDatos(argv[3]);
-
+    datos = Datos_t(atoi(argv[4]), (char*)(argv[1]), (char*)argv[2]);
+    datos->empresas = leerDatos((char*)argv[3]);
+    printf("Datos del broker cargados \n");
     /*creacion de pipe */
-    unlink(datos.nombre);
-    if (mkfifo(datos.nombre, fifo_mode) == -1)
+    unlink(datos->nombre);
+    if (mkfifo(datos->nombre, fifo_mode) == -1)
     {
         perror("Client  mkfifo");
         exit(1);
@@ -68,43 +68,39 @@ void *manejoUsuario(void *Datos)
 {
     int continuar;
     Orden *orden;
-    char *comando = sizeof(char) * TAMNOMBRE;
+    char *comando = sizeof(char*) * TAMNOMBRE;
     continuar = 1;
     while (continuar)
     {
         printf("~$ ");
         fgets(comando, TAMNOMBRE, stdin);
         to_lowercase(comando);
-        if (strcmp(comando, "salir") == 0)
-        {
-            /*antes de cerrar se muestra con que saldo quedo y el numero de acciones de cadaempresa*/
-            exit(1);
-        }
-        else
-        {
-            orden = validarEntrada(comando) 
+        
+            orden = validarEntrada(comando);
             if (orden != NULL)
             {
                 enviarDatos(orden);
-                prinf(recibirDatos(comando));
             }
-        }
+        
     }
 }
 list_t *leerDatos(char *arch)
 {
     // archivo
     FILE *archivo;
-    char *linea = malloc(sizeof(char) * maxchar);
-    // token
-    const char s[2] = " ";
-    char *token;
-    // otros
+    char *linea;
+    char *nomEmpr;
     Empresa *empresa;
-    char *nomEmpr = malloc(sizeof(char) * maxchar);
+    char *token;
+    char s[2];
     int acciones;
+    list_t *lista;
+        // token
+    s[2] = (char)" ";
+    nomEmpr = malloc(sizeof(char*) * maxchar);
+    linea = malloc(sizeof(char*) * maxchar);
     // corregir lamado a la linea
-    list_t lista = list();
+    lista = list();
 
     archivo = fopen(arch, "r");
     /*revisar perror*/
@@ -118,7 +114,7 @@ list_t *leerDatos(char *arch)
         printf("\nEl contenido del archivo de prueba es \n\n");
         while (feof(archivo) == 0)
         {
-            fgets(linea, max, archivo);
+            fgets(linea, maxchar, archivo);
             printf("%s", linea);
             //
 
@@ -154,7 +150,7 @@ Orden *validarEntrada(char *comando)
     char *precio;
 
     char *token;
-    Orden *orden = Orden_t()
+    Orden *orden;
         printf("COM: %s \n", comando);
     /*se capturan los datos*/
     token = strtok(comando, s);
@@ -219,11 +215,11 @@ Orden *validarEntrada(char *comando)
             }
             if (acciones == NULL && precio == NULL)
             {
-                return Orden_t(tipo, empresa, NULL, NULL);
+                return Orden_t((char)tipo, empresa, acciones, NULL);
             }
             else
             {
-                return Orden_t(tipo, empresa, atoi(acciones), atoi(precio));
+                return Orden_t((char)tipo, empresa, atoi(acciones), atoi(precio));
             }
         }
 
@@ -234,7 +230,7 @@ Orden *validarEntrada(char *comando)
 
         if (strcmp(tipo, "compra") == 0)
         {
-            return Orden_t(tipo, empresa, atoi(acciones), atoi(precio));
+            return Orden_t((char)tipo, empresa, atoi(acciones), atoi(precio));
         }
     }
     else
@@ -251,12 +247,12 @@ Orden *validarEntrada(char *comando)
 int enviarDatos(Orden *orden)
 {
     Mensaje *mensaje;
-    mensaje = Mensaje_t(orden,datos.pid,datos.nombre);
+    mensaje = Mensaje_t(orden,datos->pid,datos->nombre);
     int fd, creado;
     creado = 0;
     do
     {
-        if ((fd = open(datos.pipename, O_RDONLY | O_NONBLOCK)) == -1)
+        if ((fd = open(datos->pipename, O_RDONLY | O_NONBLOCK)) == -1)
         {
             perror(" Cliente  Abriendo el segundo pipe. Se volvera a intentar ");
             sleep(5);
@@ -268,11 +264,22 @@ int enviarDatos(Orden *orden)
         }
     } while (creado == 0);
     write(fd,mensaje, sizeof(struct Mns));
+    printf("Se ha enviado la orden al stock market \n");
     close(fd);
 }
 
 int validarEmpresa(char *empresa)
 {
+    int i;
+    int tam;
+    for(i=0; i< tam; tam++)
+    {
+        if(strcmp(datos->empresas[i],empresa) == 0)
+        {
+            return 1;
+        }
+    }
+    return 0;
 }
 /*utlilzado cuando se escribe el comando monto*/
 estadoBroker()
@@ -283,12 +290,12 @@ estadoBroker()
 void sig_handler(int sengnal)
 {
     int creado, fd,n;
-    Respuesta respuesta;
+    Respuesta *respuesta;
 
     creado = 0;
     do
     {
-        fd = open(c, O_RDONLY);
+        fd = open(datos->pipename, O_RDONLY);
         if (fd == -1)
         {
             perror("pipe");
@@ -307,31 +314,35 @@ void sig_handler(int sengnal)
     prinRespuesta(respuesta);
 }
 
-printRespuesta(Respuesta respu)
+void printRespuesta(Respuesta respu)
 {
 
-    if(strcmp(respu.tipo,"c") == 0)
+    if(strcmp(char)respu.tipo,"c") == 0)
     {
         printf("===============================================\n");
         printf("Se ha la compra exitosa de: \n");
-        printf("Acciones de la empresa: %s \n", respu.empresa);
-        printf("acciones compradas: %s \n",respu.acciones);
-        printf("con un monto total de: %s \n",(respu.acciones * respu.monto));
-        printf("por medio del broker: %s \n",respu.broker);
+        printf("Acciones de la empresa: %s \n", (char*)respu.empresa);
+        printf("acciones compradas: %d \n",respu.acciones);
+        printf("con un monto total de: %d \n",(respu.acciones * respu.monto));
+        printf("por medio del broker: %s \n",(char*)respu.broker);
         printf("===============================================\n");
     }
-    if (strcmp(respu.tipo, "v") == 0)
+    if (strcmp((char)respu.tipo, "v") == 0)
     {
         printf("===============================================\n");
         printf("se ha la compra exitosa de: \n");
-        printf("acciones de la empresa: %s \n", respu.empresa);
-        printf("acciones compradas: %s \n",respu.acciones);
-        printf("con un monto total de: %s \n",(respu.acciones * respu.monto));
-        printf("por medio del broker: %s \n",respu.broker);
+        printf("acciones de la empresa: %s \n", (char*)respu.empresa);
+        printf("acciones compradas: %d \n",respu.acciones);
+        printf("con un monto total de: %d \n",(respu.acciones * respu.monto));
+        printf("por medio del broker: %s \n", (char*)respu.broker);
         printf("===============================================\n");
     }
-    if (strcmp(respu.tipo, "q") == 0)
+    if (strcmp((char)respu.tipo, "q") == 0)
     {
-        
+        printf("===============================================\n");
+        printf("Se realizo la consulta: ,\n");
+        printf("Precio de las acciones de la empresa: %s",(char*)respu.empresa);
+        printf("El precio de la acciones es: %d", respu.monto);
+        printf("===============================================\n");
     }
 }

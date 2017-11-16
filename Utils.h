@@ -16,8 +16,8 @@
 #include <signal.h>
 #include <fcntl.h>
 
-#define TAMNOMBRE 20
-#define maxchar 35;
+#define TAMNOMBRE 20;
+#define maxchar 20;
 
 /* Constructores */
 Empresa* Empresa_t(int acciones ,char* nombre );

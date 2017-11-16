@@ -1,0 +1,4 @@
+aaa 0
+bbb 60
+ccc 50
+ddd 15
