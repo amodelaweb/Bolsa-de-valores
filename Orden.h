@@ -20,7 +20,7 @@ typedef struct Resp
 {
   char tipo;
   char* empresa;
-  char* broker;
+  char* brokers;
   int acciones ;
   int monto ;
   int confirmacion; // borrar

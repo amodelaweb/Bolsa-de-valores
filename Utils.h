@@ -25,7 +25,7 @@ Broker* Broker_t(char* nombre , int pid);
 Orden* Orden_t( char tipo , char* nombre_emp , int cant ,  int precio , char* broker);
 Datos* Datos_t(int monto ,char* nombre , char* nombrepipe);
 Mensaje* Mensaje_t(Orden* orden,int pid,char* pipename);
-Respuesta* Respuesta_t(char tipo, int acciones , int monto, int confirmacion , char* empresa);
+Respuesta* Respuesta_t(char tipo, int acciones , int monto, int confirmacion , char* empresa , char* broker);
 /* Comparadores para lista */
 int comparator_orden(const void *a1 , const void *b1);
 int comparator_broker(const void *a1 , const void *b1);

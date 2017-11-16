@@ -57,7 +57,7 @@ Mensaje* Mensaje_t(Orden* orden,int pid,char* pipename){
   return mensaje ;
 }
 //===============================================================================
-Respuesta* Respuesta_t(char tipo, int acciones , int monto, int confirmacion , char* empresa){
+Respuesta* Respuesta_t(char tipo, int acciones , int monto, int confirmacion , char* empresa , char* broker){
   Respuesta *respuesta = (Respuesta*)malloc(sizeof(struct Resp)) ;
   respuesta->tipo = tipo;
   respuesta->empresa = (char*)malloc((sizeof (char))*TAMNOMBRE) ;
@@ -66,6 +66,9 @@ Respuesta* Respuesta_t(char tipo, int acciones , int monto, int confirmacion , c
   respuesta->acciones = acciones ;
   respuesta->monto = monto ;
   respuesta->confirmacion = confirmacion ;
+  respuesta->brokers = (char*)malloc((sizeof (char))*TAMNOMBRE) ;
+  memset(respuesta->brokers, 0, sizeof respuesta->brokers);
+  strncpy(respuesta->brokers, broker, sizeof respuesta->brokers - 1);
   return respuesta ;
 }
 //===============================================================================
