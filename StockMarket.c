@@ -94,7 +94,9 @@ void Procesar_Orden(Mensaje mensaje){
             printf("SINO SE ES LA C\n");
             band = 1;
             avisar(ovent , ocomp , 0);
+            printf(" ES DEL ? \n");
             del_t(ventas);
+            printf("NOP\n");
           }else if(resta > 0){
             printf("O LA D\n");
             band = 1 ;
@@ -232,7 +234,7 @@ void Procesar_Orden(Mensaje mensaje){
 }
 //========================================================================
 void avisar(Orden* broker1 , Orden* broker2 , int d){
-  /*int fd1,fd2,precio ;
+  int fd1,fd2,precio ;
   Broker* baux ;
   Respuesta *respuesta;
 
@@ -243,35 +245,40 @@ void avisar(Orden* broker1 , Orden* broker2 , int d){
   }
   if(broker1 != NULL){
     respuesta = Respuesta_t('C',broker1->cantidad, precio , broker1->empresa , broker2->broker);
+    baux = (Broker*)(get_node(brokers,(const void *) Broker_t(broker1->broker,1111) ))->value;
+    if ( kill (baux->pid, SIGUSR1) == -1){
+      perror("Kill : ");
+      exit(1);
+    }
     do{
-      fd1 = open(broker1->broker, O_WRONLY|O_NONBLOCK);
+      fd1 = open(broker1->broker,O_WRONLY);
       perror(" Market abriendo pipe de respuesta : ");
       printf(" Se volvera a intentar despues\n");
       //sleep(5); //los unicos sleeps que deben colocar son los que van en los ciclos para abrir los pipes.
     }while(fd1 < 0 );
-    baux = (Broker*)(get_node(brokers,(const void *) Broker_t(broker1->broker,1111) ))->value;
     write(fd1, respuesta, sizeof(struct Resp));
-    if ( kill (baux->pid, SIGUSR1) == -1){
-      perror("Kill : ");
-      exit(1);
-    }
+
+
   }
-  if(broker2 != NULL){
-    respuesta = Respuesta_t('C',broker2->cantidad, precio , broker2->empresa , broker1->broker);
-    do{
-      fd2 = open(broker2->broker, O_WRONLY|O_NONBLOCK);
-      perror(" Market abriendo pipe de respuesta : ");
-      printf(" Se volvera a intentar despues\n");
-      //sleep(5); //los unicos sleeps que deben colocar son los que van en los ciclos para abrir los pipes.
-    }while(fd2 < 0 );
-    baux = (Broker*)(get_node(brokers,(const void *) Broker_t(broker2->broker,1111) ))->value;
-    write(fd2, respuesta, sizeof(struct Resp));
-    if ( kill (baux->pid, SIGUSR1) == -1){
-      perror("Kill : ");
-      exit(1);
-    }
-  }
+  /*if(broker2 != NULL){
+  baux = (Broker*)(get_node(brokers,(const void *) Broker_t(broker2->broker,1111) ))->value;
+  respuesta = Respuesta_t('C',broker2->cantidad, precio , broker2->empresa , broker1->broker);
+  if ( kill (baux->pid, SIGUSR1) == -1){
+  perror("Kill2 : ");
+  exit(1);
+}
+do{
+fd2 = open(broker2->broker, O_WRONLY|O_NONBLOCK);
+perror(" Market abriendo pipe de respuesta : ");
+printf(" Se volvera a intentar despues\n");
+sleep(5); //los unicos sleeps que deben colocar son los que van en los ciclos para abrir los pipes.
+}while(fd2 < 0 );
+
+write(fd2, respuesta, sizeof(struct Resp));
+
+}
 */
+
 }
 //========================================================================
 void avisar2(Orden* compra , Orden* venta , char *broker){

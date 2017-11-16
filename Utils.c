@@ -32,6 +32,7 @@ Orden* Orden_t( char tipo , char* nombre_emp , int cant ,  int precio , char* br
 //===============================================================================
 Datos* Datos_t(int monto , char* nombre , char* nombrepipe){
   Datos *dato = (Datos*)malloc(sizeof(struct Datos)) ;
+  dato->monto = monto ;
   dato->empresas =  (Empresa*)malloc( sizeof(struct Empresa));
   dato->nombre = (char*)malloc((sizeof (char))*TAMNOMBRE) ;
   memset(dato->nombre, 0, sizeof dato->nombre);
