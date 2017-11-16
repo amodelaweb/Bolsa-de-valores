@@ -89,7 +89,11 @@ int main(int argc, char const *argv[])
 }
 void *respuestaAsin(void *datos)
 {
-  
+    signal(SIGUSR1,sig_handler;
+  while(1)
+  {
+      pause();
+  }
 }
 
 void *manejoUsuario(void *Datos)
@@ -345,7 +349,7 @@ void estadoBroker()
 
 void sig_handler(int sengnal)
 {
-  int creado, fd,n;
+ /* int creado, fd,n;
   Respuesta *respuesta;
 
   creado = 0;
@@ -368,6 +372,8 @@ void sig_handler(int sengnal)
   close(fd);
 
   printRespuesta(*respuesta);
+  */
+  printf("entre al SIGNAL\n");
 }
 
 void printRespuesta(Respuesta &respu)
