@@ -26,6 +26,7 @@ int main(int argc, char const *argv[])
   char *comando;
   pthread_t thread1, thread2;
   int continuar;
+  int i;
   /*fin de variables*/
 
   if (argc < 5)
@@ -37,6 +38,11 @@ int main(int argc, char const *argv[])
   datos = Datos_t(atoi(argv[4]), (char*)(argv[1]), (char*)argv[2]);
   leerDatos((char*)argv[3]);
   printf("Datos del broker cargados \n");
+  for(i=0;i<datos->tam;i++)
+  {
+      printf("NOOMBRE: %s \n", (datos->empresas)[i].nombre);
+      printf("ACCIONES: %d \n", (datos->empresas)[i].acciones);
+  }
   /*creacion de pipe */
   unlink(datos->nombre);
   if (mkfifo(datos->nombre, fifo_mode) == -1)
@@ -113,15 +119,14 @@ void leerDatos(char *arch)
     while (feof(archivo) == 0)
     {
       fgets(linea, maxchar, archivo);
-      printf("%s", linea);
+      printf("LINEA: %s \n", linea);
       /* get the first token */
       token = strtok(linea, s);
-
+        printf("Token1: %s \n",token);
       /* walk through other tokens */
-      printf(" %s\n", token);
       strcpy(nomEmpr, token);
       token = strtok(NULL, s);
-      printf("=1111========= %s\n",token);
+      printf("Token2: %s \n", token);
       acciones = atoi(token);
 
       empresa = Empresa_t(acciones, nomEmpr);
